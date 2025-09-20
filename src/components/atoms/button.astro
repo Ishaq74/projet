@@ -1,0 +1,204 @@
+---
+// Button atom component with 3 variants
+export interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  loading?: boolean;
+  fullWidth?: boolean;
+  href?: string;
+  target?: string;
+  class?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  type = 'button',
+  disabled = false,
+  loading = false,
+  fullWidth = false,
+  href,
+  target,
+  class: className = '',
+} = Astro.props;
+
+const Component = href ? 'a' : 'button';
+
+const classes = [
+  'btn',
+  `btn--${variant}`,
+  `btn--${size}`,
+  fullWidth && 'btn--full-width',
+  loading && 'btn--loading',
+  disabled && 'btn--disabled',
+  className
+].filter(Boolean).join(' ');
+---
+
+<Component class={classes} {...(href ? { href, target, role: 'button' } : { type, disabled: disabled || loading })}>
+  {loading && <span class="btn__spinner" aria-hidden="true"></span>}
+  <span class={loading ? 'btn__content btn__content--loading' : 'btn__content'}>
+    <slot />
+  </span>
+</Component>
+
+<style>
+  /* Button Base Styles */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    border-radius: var(--radius-base);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: var(--transition-all);
+    position: relative;
+    overflow: hidden;
+    
+    /* Remove button defaults */
+    background: none;
+    font-family: inherit;
+    line-height: 1;
+    
+    /* Focus styles for accessibility */
+    &:focus-visible {
+      outline: 2px solid var(--border-focus);
+      outline-offset: 2px;
+    }
+    
+    /* Disabled state */
+    &:disabled,
+    &.btn--disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  }
+
+  /* Size variants */
+  .btn--sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 32px;
+  }
+
+  .btn--md {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-base);
+    min-height: 40px;
+  }
+
+  .btn--lg {
+    padding: var(--space-4) var(--space-6);
+    font-size: var(--font-size-lg);
+    min-height: 48px;
+  }
+
+  /* Color variants */
+  .btn--primary {
+    background-color: var(--color-accent);
+    color: var(--text-inverse);
+    border-color: var(--color-accent);
+    
+    &:hover:not(:disabled) {
+      background-color: var(--color-accent-hover);
+      border-color: var(--color-accent-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    &:active {
+      background-color: var(--color-accent-active);
+      border-color: var(--color-accent-active);
+      transform: translateY(0);
+    }
+  }
+
+  .btn--secondary {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+    
+    &:hover:not(:disabled) {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-secondary);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    &:active {
+      background-color: var(--bg-secondary);
+      transform: translateY(0);
+    }
+  }
+
+  .btn--ghost {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border-color: transparent;
+    
+    &:hover:not(:disabled) {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    
+    &:active {
+      background-color: var(--bg-tertiary);
+      transform: translateY(0);
+    }
+  }
+
+  /* Full width */
+  .btn--full-width {
+    width: 100%;
+  }
+
+  /* Loading state */
+  .btn--loading {
+    pointer-events: none;
+  }
+
+  .btn__content--loading {
+    opacity: 0;
+  }
+
+  .btn__spinner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: var(--radius-full);
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .btn--sm {
+      min-height: 36px;
+      padding: var(--space-2) var(--space-4);
+    }
+    
+    .btn--md {
+      min-height: 44px;
+      padding: var(--space-3) var(--space-5);
+    }
+    
+    .btn--lg {
+      min-height: 52px;
+      padding: var(--space-4) var(--space-7);
+    }
+  }
+</style>

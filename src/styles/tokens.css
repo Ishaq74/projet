@@ -1,7 +1,9 @@
-/* Design Tokens - Global CSS Custom Properties */
+/* ULTIMATE DESIGN SYSTEM TOKENS - SALUT ANNECY */
+/* Complete CSS Custom Properties for a perfect design system */
+
 :root {
-  /* ===== COLOR PALETTE ===== */
-  /* Primary Colors */
+  /* ===== ANNECY BRAND COLORS ===== */
+  /* Primary Lake Blue - The heart of Annecy */
   --color-primary-50: #f0f9ff;
   --color-primary-100: #e0f2fe;
   --color-primary-200: #bae6fd;
@@ -14,21 +16,59 @@
   --color-primary-900: #0c4a6e;
   --color-primary-950: #082f49;
 
-  /* Neutral Colors */
-  --color-neutral-0: #ffffff;
-  --color-neutral-50: #f8fafc;
-  --color-neutral-100: #f1f5f9;
-  --color-neutral-200: #e2e8f0;
-  --color-neutral-300: #cbd5e1;
-  --color-neutral-400: #94a3b8;
-  --color-neutral-500: #64748b;
-  --color-neutral-600: #475569;
-  --color-neutral-700: #334155;
-  --color-neutral-800: #1e293b;
-  --color-neutral-900: #0f172a;
-  --color-neutral-950: #020617;
+  /* Secondary Mountain Green */
+  --color-secondary-50: #f0fdf4;
+  --color-secondary-100: #dcfce7;
+  --color-secondary-200: #bbf7d0;
+  --color-secondary-300: #86efac;
+  --color-secondary-400: #4ade80;
+  --color-secondary-500: #22c55e;
+  --color-secondary-600: #16a34a;
+  --color-secondary-700: #15803d;
+  --color-secondary-800: #166534;
+  --color-secondary-900: #14532d;
+  --color-secondary-950: #052e16;
 
-  /* Success Colors */
+  /* Accent Alpine Purple */
+  --color-accent-50: #faf5ff;
+  --color-accent-100: #f3e8ff;
+  --color-accent-200: #e9d5ff;
+  --color-accent-300: #d8b4fe;
+  --color-accent-400: #c084fc;
+  --color-accent-500: #a855f7;
+  --color-accent-600: #9333ea;
+  --color-accent-700: #7c2d12;
+  --color-accent-800: #6b21a8;
+  --color-accent-900: #581c87;
+  --color-accent-950: #3b0764;
+
+  /* Neutral Grayscale - Complete range */
+  --color-neutral-0: #ffffff;
+  --color-neutral-25: #fcfcfd;
+  --color-neutral-50: #f8fafc;
+  --color-neutral-75: #f4f6f8;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-150: #eceff4;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-250: #d7dde8;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-350: #b8c4d0;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-450: #7c8ba0;
+  --color-neutral-500: #64748b;
+  --color-neutral-550: #56657a;
+  --color-neutral-600: #475569;
+  --color-neutral-650: #3e4c5e;
+  --color-neutral-700: #334155;
+  --color-neutral-750: #2a374a;
+  --color-neutral-800: #1e293b;
+  --color-neutral-850: #172030;
+  --color-neutral-900: #0f172a;
+  --color-neutral-925: #0a1120;
+  --color-neutral-950: #020617;
+  --color-neutral-975: #010409;
+
+  /* Success Green Scale */
   --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
   --color-success-200: #bbf7d0;
@@ -39,8 +79,9 @@
   --color-success-700: #15803d;
   --color-success-800: #166534;
   --color-success-900: #14532d;
+  --color-success-950: #052e16;
 
-  /* Warning Colors */
+  /* Warning Orange Scale */
   --color-warning-50: #fffbeb;
   --color-warning-100: #fef3c7;
   --color-warning-200: #fde68a;
@@ -51,8 +92,9 @@
   --color-warning-700: #b45309;
   --color-warning-800: #92400e;
   --color-warning-900: #78350f;
+  --color-warning-950: #451a03;
 
-  /* Error Colors */
+  /* Error Red Scale */
   --color-error-50: #fef2f2;
   --color-error-100: #fee2e2;
   --color-error-200: #fecaca;
@@ -63,14 +105,43 @@
   --color-error-700: #b91c1c;
   --color-error-800: #991b1b;
   --color-error-900: #7f1d1d;
+  --color-error-950: #450a0a;
 
-  /* ===== TYPOGRAPHY ===== */
+  /* Info Cyan Scale */
+  --color-info-50: #ecfeff;
+  --color-info-100: #cffafe;
+  --color-info-200: #a5f3fc;
+  --color-info-300: #67e8f9;
+  --color-info-400: #22d3ee;
+  --color-info-500: #06b6d4;
+  --color-info-600: #0891b2;
+  --color-info-700: #0e7490;
+  --color-info-800: #155e75;
+  --color-info-900: #164e63;
+  --color-info-950: #083344;
+
+  /* ===== TYPOGRAPHY SYSTEM ===== */
   /* Font Families */
-  --font-family-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-family-serif: Georgia, Cambria, 'Times New Roman', Times, serif;
-  --font-family-mono: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-serif: 'Playfair Display', Georgia, 'Times New Roman', Times, serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  --font-family-display: 'Playfair Display', Georgia, serif;
+  --font-family-body: var(--font-family-sans);
+  --font-family-heading: var(--font-family-display);
 
-  /* Font Sizes */
+  /* Font Weights - Complete range */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* Font Sizes - Perfect scale */
+  --font-size-2xs: 0.625rem;    /* 10px */
   --font-size-xs: 0.75rem;      /* 12px */
   --font-size-sm: 0.875rem;     /* 14px */
   --font-size-base: 1rem;       /* 16px */
@@ -82,64 +153,181 @@
   --font-size-5xl: 3rem;        /* 48px */
   --font-size-6xl: 3.75rem;     /* 60px */
   --font-size-7xl: 4.5rem;      /* 72px */
+  --font-size-8xl: 6rem;        /* 96px */
+  --font-size-9xl: 8rem;        /* 128px */
 
   /* Line Heights */
+  --line-height-none: 1;
   --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.625;
   --line-height-loose: 2;
 
-  /* Font Weights */
-  --font-weight-thin: 100;
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
-  --font-weight-black: 900;
+  /* Letter Spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
 
-  /* ===== SPACING ===== */
+  /* ===== SPACING SYSTEM ===== */
+  /* Perfect 4px-based spacing scale */
+  --space-px: 1px;
   --space-0: 0;
-  --space-1: 0.25rem;    /* 4px */
-  --space-2: 0.5rem;     /* 8px */
-  --space-3: 0.75rem;    /* 12px */
-  --space-4: 1rem;       /* 16px */
-  --space-5: 1.25rem;    /* 20px */
-  --space-6: 1.5rem;     /* 24px */
-  --space-8: 2rem;       /* 32px */
-  --space-10: 2.5rem;    /* 40px */
-  --space-12: 3rem;      /* 48px */
-  --space-16: 4rem;      /* 64px */
-  --space-20: 5rem;      /* 80px */
-  --space-24: 6rem;      /* 96px */
-  --space-32: 8rem;      /* 128px */
-  --space-40: 10rem;     /* 160px */
-  --space-48: 12rem;     /* 192px */
-  --space-56: 14rem;     /* 224px */
-  --space-64: 16rem;     /* 256px */
+  --space-0_5: 0.125rem;    /* 2px */
+  --space-1: 0.25rem;       /* 4px */
+  --space-1_5: 0.375rem;    /* 6px */
+  --space-2: 0.5rem;        /* 8px */
+  --space-2_5: 0.625rem;    /* 10px */
+  --space-3: 0.75rem;       /* 12px */
+  --space-3_5: 0.875rem;    /* 14px */
+  --space-4: 1rem;          /* 16px */
+  --space-5: 1.25rem;       /* 20px */
+  --space-6: 1.5rem;        /* 24px */
+  --space-7: 1.75rem;       /* 28px */
+  --space-8: 2rem;          /* 32px */
+  --space-9: 2.25rem;       /* 36px */
+  --space-10: 2.5rem;       /* 40px */
+  --space-11: 2.75rem;      /* 44px */
+  --space-12: 3rem;         /* 48px */
+  --space-14: 3.5rem;       /* 56px */
+  --space-16: 4rem;         /* 64px */
+  --space-18: 4.5rem;       /* 72px */
+  --space-20: 5rem;         /* 80px */
+  --space-24: 6rem;         /* 96px */
+  --space-28: 7rem;         /* 112px */
+  --space-32: 8rem;         /* 128px */
+  --space-36: 9rem;         /* 144px */
+  --space-40: 10rem;        /* 160px */
+  --space-44: 11rem;        /* 176px */
+  --space-48: 12rem;        /* 192px */
+  --space-52: 13rem;        /* 208px */
+  --space-56: 14rem;        /* 224px */
+  --space-60: 15rem;        /* 240px */
+  --space-64: 16rem;        /* 256px */
+  --space-72: 18rem;        /* 288px */
+  --space-80: 20rem;        /* 320px */
+  --space-96: 24rem;        /* 384px */
 
-  /* ===== BORDER RADIUS ===== */
+  /* ===== SIZING SYSTEM ===== */
+  /* All size tokens */
+  --size-0: 0;
+  --size-px: 1px;
+  --size-0_5: 0.125rem;     /* 2px */
+  --size-1: 0.25rem;        /* 4px */
+  --size-1_5: 0.375rem;     /* 6px */
+  --size-2: 0.5rem;         /* 8px */
+  --size-2_5: 0.625rem;     /* 10px */
+  --size-3: 0.75rem;        /* 12px */
+  --size-3_5: 0.875rem;     /* 14px */
+  --size-4: 1rem;           /* 16px */
+  --size-5: 1.25rem;        /* 20px */
+  --size-6: 1.5rem;         /* 24px */
+  --size-7: 1.75rem;        /* 28px */
+  --size-8: 2rem;           /* 32px */
+  --size-9: 2.25rem;        /* 36px */
+  --size-10: 2.5rem;        /* 40px */
+  --size-11: 2.75rem;       /* 44px */
+  --size-12: 3rem;          /* 48px */
+  --size-14: 3.5rem;        /* 56px */
+  --size-16: 4rem;          /* 64px */
+  --size-20: 5rem;          /* 80px */
+  --size-24: 6rem;          /* 96px */
+  --size-28: 7rem;          /* 112px */
+  --size-32: 8rem;          /* 128px */
+  --size-36: 9rem;          /* 144px */
+  --size-40: 10rem;         /* 160px */
+  --size-44: 11rem;         /* 176px */
+  --size-48: 12rem;         /* 192px */
+  --size-52: 13rem;         /* 208px */
+  --size-56: 14rem;         /* 224px */
+  --size-60: 15rem;         /* 240px */
+  --size-64: 16rem;         /* 256px */
+  --size-72: 18rem;         /* 288px */
+  --size-80: 20rem;         /* 320px */
+  --size-96: 24rem;         /* 384px */
+
+  /* Relative sizes */
+  --size-auto: auto;
+  --size-full: 100%;
+  --size-screen: 100vw;
+  --size-min: min-content;
+  --size-max: max-content;
+  --size-fit: fit-content;
+
+  /* ===== BORDER SYSTEM ===== */
+  /* Border Radius */
   --radius-none: 0;
-  --radius-xs: 0.125rem;   /* 2px */
-  --radius-sm: 0.25rem;    /* 4px */
-  --radius-base: 0.375rem; /* 6px */
-  --radius-md: 0.5rem;     /* 8px */
-  --radius-lg: 0.75rem;    /* 12px */
-  --radius-xl: 1rem;       /* 16px */
-  --radius-2xl: 1.5rem;    /* 24px */
+  --radius-sm: 0.125rem;      /* 2px */
+  --radius-base: 0.25rem;     /* 4px */
+  --radius-md: 0.375rem;      /* 6px */
+  --radius-lg: 0.5rem;        /* 8px */
+  --radius-xl: 0.75rem;       /* 12px */
+  --radius-2xl: 1rem;         /* 16px */
+  --radius-3xl: 1.5rem;       /* 24px */
   --radius-full: 9999px;
 
-  /* ===== SHADOWS ===== */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  /* Border Widths */
+  --border-0: 0;
+  --border: 1px;
+  --border-2: 2px;
+  --border-4: 4px;
+  --border-8: 8px;
+
+  /* ===== SHADOW SYSTEM ===== */
+  /* Base shadows */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-base: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  --shadow-none: 0 0 #0000;
 
-  /* ===== Z-INDEX ===== */
+  /* Colored shadows */
+  --shadow-primary: 0 10px 15px -3px rgb(14 165 233 / 0.4), 0 4px 6px -4px rgb(14 165 233 / 0.1);
+  --shadow-secondary: 0 10px 15px -3px rgb(34 197 94 / 0.4), 0 4px 6px -4px rgb(34 197 94 / 0.1);
+  --shadow-accent: 0 10px 15px -3px rgb(168 85 247 / 0.4), 0 4px 6px -4px rgb(168 85 247 / 0.1);
+  --shadow-success: 0 10px 15px -3px rgb(34 197 94 / 0.4), 0 4px 6px -4px rgb(34 197 94 / 0.1);
+  --shadow-warning: 0 10px 15px -3px rgb(245 158 11 / 0.4), 0 4px 6px -4px rgb(245 158 11 / 0.1);
+  --shadow-error: 0 10px 15px -3px rgb(239 68 68 / 0.4), 0 4px 6px -4px rgb(239 68 68 / 0.1);
+
+  /* ===== TRANSITION SYSTEM ===== */
+  --transition-none: none;
+  --transition-all: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-colors: color 150ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-opacity: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-shadow: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Duration */
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+
+  /* Easing functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ===== Z-INDEX SYSTEM ===== */
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-auto: auto;
   --z-dropdown: 1000;
   --z-sticky: 1020;
   --z-fixed: 1030;
@@ -147,20 +335,112 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+  --z-notification: 1080;
+  --z-debug: 2147483647;
 
-  /* ===== BREAKPOINTS (for CSS container queries) ===== */
+  /* ===== BREAKPOINT SYSTEM ===== */
+  --bp-xs: 475px;
   --bp-sm: 640px;
   --bp-md: 768px;
   --bp-lg: 1024px;
   --bp-xl: 1280px;
   --bp-2xl: 1536px;
 
-  /* ===== ANIMATIONS ===== */
-  --transition-fast: 150ms ease;
-  --transition-base: 200ms ease;
-  --transition-slow: 300ms ease;
-  --transition-all: all var(--transition-base);
-  --transition-colors: color var(--transition-base), background-color var(--transition-base), border-color var(--transition-base);
-  --transition-transform: transform var(--transition-base);
-  --transition-opacity: opacity var(--transition-base);
+  /* Container sizes */
+  --container-xs: 475px;
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+
+  /* ===== GRID SYSTEM ===== */
+  --grid-cols-1: repeat(1, minmax(0, 1fr));
+  --grid-cols-2: repeat(2, minmax(0, 1fr));
+  --grid-cols-3: repeat(3, minmax(0, 1fr));
+  --grid-cols-4: repeat(4, minmax(0, 1fr));
+  --grid-cols-5: repeat(5, minmax(0, 1fr));
+  --grid-cols-6: repeat(6, minmax(0, 1fr));
+  --grid-cols-7: repeat(7, minmax(0, 1fr));
+  --grid-cols-8: repeat(8, minmax(0, 1fr));
+  --grid-cols-9: repeat(9, minmax(0, 1fr));
+  --grid-cols-10: repeat(10, minmax(0, 1fr));
+  --grid-cols-11: repeat(11, minmax(0, 1fr));
+  --grid-cols-12: repeat(12, minmax(0, 1fr));
+
+  /* ===== ASPECT RATIOS ===== */
+  --aspect-square: 1 / 1;
+  --aspect-video: 16 / 9;
+  --aspect-photo: 4 / 3;
+  --aspect-golden: 1.618 / 1;
+  --aspect-portrait: 3 / 4;
+  --aspect-landscape: 4 / 3;
+  --aspect-wide: 21 / 9;
+
+  /* ===== OPACITY SCALE ===== */
+  --opacity-0: 0;
+  --opacity-5: 0.05;
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-25: 0.25;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-75: 0.75;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-95: 0.95;
+  --opacity-100: 1;
+
+  /* ===== BLUR EFFECTS ===== */
+  --blur-none: 0;
+  --blur-sm: 4px;
+  --blur-base: 8px;
+  --blur-md: 12px;
+  --blur-lg: 16px;
+  --blur-xl: 24px;
+  --blur-2xl: 40px;
+  --blur-3xl: 64px;
+
+  /* ===== COMPONENT SPECIFIC TOKENS ===== */
+  /* Form elements */
+  --form-field-height-sm: 2rem;     /* 32px */
+  --form-field-height-md: 2.5rem;   /* 40px */
+  --form-field-height-lg: 3rem;     /* 48px */
+  --form-field-padding-x: 0.75rem;  /* 12px */
+  --form-field-padding-y: 0.5rem;   /* 8px */
+
+  /* Button heights */
+  --button-height-sm: 2rem;         /* 32px */
+  --button-height-md: 2.5rem;       /* 40px */
+  --button-height-lg: 3rem;         /* 48px */
+  --button-height-xl: 3.5rem;       /* 56px */
+
+  /* Card padding */
+  --card-padding-sm: 1rem;          /* 16px */
+  --card-padding-md: 1.5rem;        /* 24px */
+  --card-padding-lg: 2rem;          /* 32px */
+  --card-padding-xl: 2.5rem;        /* 40px */
+
+  /* Navigation heights */
+  --nav-height: 4rem;               /* 64px */
+  --nav-height-mobile: 3.5rem;      /* 56px */
+
+  /* Content widths */
+  --content-width-sm: 640px;
+  --content-width-md: 768px;
+  --content-width-lg: 1024px;
+  --content-width-xl: 1280px;
+  --content-width-2xl: 1536px;
+  --content-width-full: 100%;
+
+  /* ===== FOCUS RING SYSTEM ===== */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-primary-500);
+  --focus-ring: var(--focus-ring-width) solid var(--focus-ring-color);
+  --focus-ring-offset-shadow: 0 0 0 var(--focus-ring-offset) var(--color-neutral-0);
+  --focus-ring-shadow: 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
 }
