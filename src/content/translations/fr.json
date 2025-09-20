@@ -66,6 +66,18 @@
     "blog": {
       "title": "Blog - Articles et Actualités",
       "description": "Découvrez nos derniers articles, actualités et conseils."
+    },
+    "services": {
+      "title": "Services",
+      "description": "Découvrez nos services personnalisés pour répondre à tous vos besoins."
+    },
+    "training": {
+      "title": "Formations",
+      "description": "Formations professionnelles en développement web moderne avec Astro, TypeScript et JavaScript."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Contactez-nous pour vos projets et questions."
     }
   }
 }
