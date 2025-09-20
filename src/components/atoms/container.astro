@@ -1,0 +1,92 @@
+---
+// Container atom for consistent layouts
+export interface Props {
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+  centered?: boolean;
+  class?: string;
+}
+
+const {
+  size = 'lg',
+  padding = 'md',
+  centered = true,
+  class: className = '',
+} = Astro.props;
+
+const classes = [
+  'container',
+  `container--${size}`,
+  `container--padding-${padding}`,
+  centered && 'container--centered',
+  className
+].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <slot />
+</div>
+
+<style>
+  .container {
+    width: 100%;
+  }
+
+  /* Size variants */
+  .container--sm {
+    max-width: 640px;
+  }
+
+  .container--md {
+    max-width: 768px;
+  }
+
+  .container--lg {
+    max-width: 1024px;
+  }
+
+  .container--xl {
+    max-width: 1280px;
+  }
+
+  .container--full {
+    max-width: none;
+  }
+
+  /* Padding variants */
+  .container--padding-none {
+    padding: 0;
+  }
+
+  .container--padding-sm {
+    padding: 0 var(--space-4);
+  }
+
+  .container--padding-md {
+    padding: 0 var(--space-6);
+  }
+
+  .container--padding-lg {
+    padding: 0 var(--space-8);
+  }
+
+  .container--padding-xl {
+    padding: 0 var(--space-12);
+  }
+
+  /* Centered variant */
+  .container--centered {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .container--padding-sm,
+    .container--padding-md,
+    .container--padding-lg,
+    .container--padding-xl {
+      padding: 0 var(--space-4);
+    }
+  }
+</style>

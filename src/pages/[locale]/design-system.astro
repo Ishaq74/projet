@@ -1,0 +1,350 @@
+---
+// Design System Test/Demo Page
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/organisms/navbar.astro';
+import Container from '../../components/atoms/container.astro';
+import Button from '../../components/atoms/button.astro';
+import Heading from '../../components/atoms/heading.astro';
+import Input from '../../components/atoms/input.astro';
+import Icon from '../../components/atoms/icon.astro';
+import Card from '../../components/molecules/card.astro';
+import FormField from '../../components/molecules/form-field.astro';
+import { loadTranslations, locales } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+export async function getStaticPaths() {
+  return locales.map((localeConfig) => ({
+    params: { locale: localeConfig.code },
+  }));
+}
+
+const { locale } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+const title = `Design System - Salut Annecy`;
+const description = "Design system components showcase";
+---
+
+<Layout title={title} description={description} locale={locale}>
+  <Navbar slot="header" locale={locale} currentPath="/design-system" />
+  
+  <main class="design-system-page">
+    <Container size="lg" padding="lg">
+      <div class="demo-section">
+        <Heading level={1} size="4xl" align="center">Design System</Heading>
+        <p class="demo-intro">Salut Annecy Design System Components</p>
+      </div>
+
+      <!-- Buttons Section -->
+      <section class="demo-section">
+        <Heading level={2} size="2xl">Buttons</Heading>
+        <div class="demo-grid">
+          <Card variant="outlined" padding="md">
+            <Heading level={3} size="lg">Primary Buttons</Heading>
+            <div class="demo-row">
+              <Button variant="primary" size="sm">Small</Button>
+              <Button variant="primary" size="md">Medium</Button>
+              <Button variant="primary" size="lg">Large</Button>
+            </div>
+          </Card>
+          
+          <Card variant="outlined" padding="md">
+            <Heading level={3} size="lg">Secondary Buttons</Heading>
+            <div class="demo-row">
+              <Button variant="secondary" size="sm">Small</Button>
+              <Button variant="secondary" size="md">Medium</Button>
+              <Button variant="secondary" size="lg">Large</Button>
+            </div>
+          </Card>
+          
+          <Card variant="outlined" padding="md">
+            <Heading level={3} size="lg">Ghost Buttons</Heading>
+            <div class="demo-row">
+              <Button variant="ghost" size="sm">Small</Button>
+              <Button variant="ghost" size="md">Medium</Button>
+              <Button variant="ghost" size="lg">Large</Button>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      <!-- Icons Section -->
+      <section class="demo-section">
+        <Heading level={2} size="2xl">Icons</Heading>
+        <Card variant="outlined" padding="md">
+          <div class="demo-icon-grid">
+            <div class="demo-icon-item">
+              <Icon name="home" size="lg" />
+              <span>home</span>
+            </div>
+            <div class="demo-icon-item">
+              <Icon name="search" size="lg" />
+              <span>search</span>
+            </div>
+            <div class="demo-icon-item">
+              <Icon name="user" size="lg" />
+              <span>user</span>
+            </div>
+            <div class="demo-icon-item">
+              <Icon name="heart" size="lg" color="error" />
+              <span>heart</span>
+            </div>
+            <div class="demo-icon-item">
+              <Icon name="star" size="lg" color="warning" />
+              <span>star</span>
+            </div>
+            <div class="demo-icon-item">
+              <Icon name="check" size="lg" color="success" />
+              <span>check</span>
+            </div>
+          </div>
+        </Card>
+      </section>
+
+      <!-- Forms Section -->
+      <section class="demo-section">
+        <Heading level={2} size="2xl">Form Components</Heading>
+        <div class="demo-grid">
+          <Card variant="outlined" padding="md">
+            <Heading level={3} size="lg">Form Fields</Heading>
+            <div class="demo-form">
+              <FormField
+                label="Email Address"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                required
+              />
+              <FormField
+                label="Password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                helperText="Minimum 8 characters"
+                required
+              />
+              <FormField
+                label="Success Field"
+                name="success"
+                type="text"
+                value="Valid input"
+                successText="Looks good!"
+              />
+              <FormField
+                label="Error Field"
+                name="error"
+                type="text"
+                value="Invalid input"
+                errorText="This field has an error"
+              />
+            </div>
+          </Card>
+          
+          <Card variant="outlined" padding="md">
+            <Heading level={3} size="lg">Input Variants</Heading>
+            <div class="demo-form">
+              <Input placeholder="Default input" />
+              <Input placeholder="Success input" variant="success" />
+              <Input placeholder="Error input" variant="error" />
+              <Input placeholder="Disabled input" disabled />
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      <!-- Cards Section -->
+      <section class="demo-section">
+        <Heading level={2} size="2xl">Cards</Heading>
+        <div class="demo-grid">
+          <Card variant="default" padding="md">
+            <Heading level={3} size="lg">Default Card</Heading>
+            <p>This is a default card with border.</p>
+          </Card>
+          
+          <Card variant="elevated" padding="md" hoverable>
+            <Heading level={3} size="lg">Elevated Card</Heading>
+            <p>This is an elevated card with shadow. Hover me!</p>
+          </Card>
+          
+          <Card variant="outlined" padding="md" clickable>
+            <Heading level={3} size="lg">Outlined Card</Heading>
+            <p>This is an outlined card. I'm clickable!</p>
+          </Card>
+        </div>
+      </section>
+
+      <!-- Typography Section -->
+      <section class="demo-section">
+        <Heading level={2} size="2xl">Typography</Heading>
+        <Card variant="outlined" padding="md">
+          <div class="demo-typography">
+            <Heading level={1} size="5xl">Heading 1 - 5XL</Heading>
+            <Heading level={2} size="4xl">Heading 2 - 4XL</Heading>
+            <Heading level={3} size="3xl">Heading 3 - 3XL</Heading>
+            <Heading level={4} size="2xl">Heading 4 - 2XL</Heading>
+            <Heading level={5} size="xl">Heading 5 - XL</Heading>
+            <Heading level={6} size="lg">Heading 6 - LG</Heading>
+            <p class="demo-text">This is regular paragraph text showcasing the typography system.</p>
+          </div>
+        </Card>
+      </section>
+
+      <!-- Interactive Demo -->
+      <section class="demo-section">
+        <Heading level={2} size="2xl">Interactive Demo</Heading>
+        <Card variant="elevated" padding="lg">
+          <Heading level={3} size="xl" align="center">Contact Form</Heading>
+          <form class="demo-contact-form">
+            <div class="demo-form-row">
+              <FormField
+                label="First Name"
+                name="firstName"
+                type="text"
+                placeholder="John"
+                required
+              />
+              <FormField
+                label="Last Name"
+                name="lastName"
+                type="text"
+                placeholder="Doe"
+                required
+              />
+            </div>
+            <FormField
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="john.doe@example.com"
+              required
+            />
+            <FormField
+              label="Message"
+              name="message"
+              type="text"
+              placeholder="Your message here..."
+              helperText="Tell us how we can help you"
+            />
+            <div class="demo-form-actions">
+              <Button variant="secondary" type="button">Cancel</Button>
+              <Button variant="primary" type="submit">Send Message</Button>
+            </div>
+          </form>
+        </Card>
+      </section>
+    </Container>
+  </main>
+</Layout>
+
+<style>
+  .design-system-page {
+    padding: var(--space-8) 0;
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+  }
+
+  .demo-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .demo-intro {
+    text-align: center;
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+  }
+
+  .demo-row {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: var(--space-4);
+  }
+
+  .demo-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .demo-icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-base);
+    background-color: var(--bg-secondary);
+    text-align: center;
+  }
+
+  .demo-icon-item span {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+  }
+
+  .demo-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .demo-typography {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .demo-text {
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .demo-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .demo-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .demo-form-actions {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: flex-end;
+    margin-top: var(--space-4);
+  }
+
+  @media (max-width: 768px) {
+    .demo-form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .demo-form-actions {
+      justify-content: stretch;
+    }
+
+    .demo-form-actions > * {
+      flex: 1;
+    }
+  }
+</style>

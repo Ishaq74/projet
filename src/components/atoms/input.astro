@@ -1,0 +1,177 @@
+---
+// Input atom component with validation states
+export interface Props {
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
+  name?: string;
+  id?: string;
+  placeholder?: string;
+  value?: string;
+  required?: boolean;
+  disabled?: boolean;
+  readonly?: boolean;
+  autocomplete?: string;
+  variant?: 'default' | 'success' | 'error';
+  size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
+  class?: string;
+}
+
+const {
+  type = 'text',
+  name,
+  id,
+  placeholder,
+  value,
+  required = false,
+  disabled = false,
+  readonly = false,
+  autocomplete,
+  variant = 'default',
+  size = 'md',
+  fullWidth = false,
+  class: className = '',
+} = Astro.props;
+
+const classes = [
+  'input',
+  `input--${variant}`,
+  `input--${size}`,
+  fullWidth && 'input--full-width',
+  disabled && 'input--disabled',
+  readonly && 'input--readonly',
+  className
+].filter(Boolean).join(' ');
+---
+
+<input
+  class={classes}
+  type={type}
+  name={name}
+  id={id}
+  placeholder={placeholder}
+  value={value}
+  required={required}
+  disabled={disabled}
+  readonly={readonly}
+  autocomplete={autocomplete}
+  aria-invalid={variant === 'error' ? 'true' : 'false'}
+/>
+
+<style>
+  .input {
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-base);
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    transition: var(--transition-all);
+    outline: none;
+    width: 100%;
+
+    &::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    &:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--color-primary-100);
+    }
+
+    &:hover:not(:disabled):not(:focus) {
+      border-color: var(--border-secondary);
+    }
+  }
+
+  /* Size variants */
+  .input--sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 32px;
+  }
+
+  .input--md {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-base);
+    min-height: 40px;
+  }
+
+  .input--lg {
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-lg);
+    min-height: 48px;
+  }
+
+  /* State variants */
+  .input--success {
+    border-color: var(--border-success);
+
+    &:focus {
+      border-color: var(--border-success);
+      box-shadow: 0 0 0 3px var(--color-success-100);
+    }
+  }
+
+  .input--error {
+    border-color: var(--border-error);
+
+    &:focus {
+      border-color: var(--border-error);
+      box-shadow: 0 0 0 3px var(--color-error-100);
+    }
+  }
+
+  /* Modifier variants */
+  .input--full-width {
+    width: 100%;
+  }
+
+  .input--disabled {
+    background-color: var(--bg-tertiary);
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+
+    &::placeholder {
+      color: var(--text-tertiary);
+    }
+  }
+
+  .input--readonly {
+    background-color: var(--bg-secondary);
+    cursor: default;
+  }
+
+  /* Dark theme adjustments */
+  [data-theme="dark"] .input {
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  [data-theme="dark"] .input--success:focus {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+  }
+
+  [data-theme="dark"] .input--error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .input--sm {
+      min-height: 36px;
+      padding: var(--space-2) var(--space-4);
+    }
+    
+    .input--md {
+      min-height: 44px;
+      padding: var(--space-3) var(--space-5);
+    }
+    
+    .input--lg {
+      min-height: 52px;
+      padding: var(--space-4) var(--space-6);
+    }
+  }
+</style>

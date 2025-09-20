@@ -1,0 +1,175 @@
+---
+// Heading atom component with semantic levels and sizes
+export interface Props {
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
+  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  color?: 'primary' | 'secondary' | 'tertiary' | 'inverse';
+  align?: 'left' | 'center' | 'right';
+  class?: string;
+}
+
+const {
+  level = 1,
+  size,
+  weight = 'bold',
+  color = 'primary',
+  align = 'left',
+  class: className = '',
+} = Astro.props;
+
+const Tag = `h${level}` as keyof HTMLElementTagNameMap;
+
+// Auto-size based on level if size not specified
+const headingSize = size || {
+  1: '3xl',
+  2: '2xl', 
+  3: 'xl',
+  4: 'lg',
+  5: 'md',
+  6: 'sm'
+}[level];
+
+const classes = [
+  'heading',
+  `heading--${headingSize}`,
+  `heading--${weight}`,
+  `heading--${color}`,
+  `heading--${align}`,
+  className
+].filter(Boolean).join(' ');
+---
+
+<Tag class={classes}>
+  <slot />
+</Tag>
+
+<style>
+  .heading {
+    margin: 0;
+    line-height: var(--line-height-tight);
+    font-family: var(--font-family-heading);
+  }
+
+  /* Size variants */
+  .heading--xs {
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-normal);
+  }
+
+  .heading--sm {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+  }
+
+  .heading--md {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+  }
+
+  .heading--lg {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-snug);
+  }
+
+  .heading--xl {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-snug);
+  }
+
+  .heading--2xl {
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-tight);
+  }
+
+  .heading--3xl {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-tight);
+  }
+
+  .heading--4xl {
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-tight);
+  }
+
+  .heading--5xl {
+    font-size: var(--font-size-5xl);
+    line-height: var(--line-height-none);
+  }
+
+  /* Weight variants */
+  .heading--normal {
+    font-weight: var(--font-weight-normal);
+  }
+
+  .heading--medium {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .heading--semibold {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .heading--bold {
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* Color variants */
+  .heading--primary {
+    color: var(--text-primary);
+  }
+
+  .heading--secondary {
+    color: var(--text-secondary);
+  }
+
+  .heading--tertiary {
+    color: var(--text-tertiary);
+  }
+
+  .heading--inverse {
+    color: var(--text-inverse);
+  }
+
+  /* Alignment variants */
+  .heading--left {
+    text-align: left;
+  }
+
+  .heading--center {
+    text-align: center;
+  }
+
+  .heading--right {
+    text-align: right;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .heading--4xl {
+      font-size: var(--font-size-3xl);
+    }
+
+    .heading--5xl {
+      font-size: var(--font-size-4xl);
+    }
+
+    .heading--3xl {
+      font-size: var(--font-size-2xl);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .heading--3xl {
+      font-size: var(--font-size-xl);
+    }
+
+    .heading--4xl {
+      font-size: var(--font-size-2xl);
+    }
+
+    .heading--5xl {
+      font-size: var(--font-size-3xl);
+    }
+  }
+</style>
