@@ -1,0 +1,15 @@
+{
+  "name": "Technology",
+  "slug": "technology",
+  "description": "Articles about latest technologies and trends",
+  "color": "#3b82f6",
+  "icon": "tech",
+  "locale": "en",
+  "translations": {
+    "fr": "technologie",
+    "de": "technologie",
+    "es": "tecnologia",
+    "ar": "تكنولوجيا",
+    "zh": "技术"
+  }
+}
