@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "services": "Dienstleistungen",
+    "training": "Schulungen",
+    "blog": "Blog",
+    "contact": "Kontakt",
+    "profile": "Profil",
+    "admin": "Administration",
+    "login": "Anmelden",
+    "logout": "Abmelden"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "submit": "Senden",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "search": "Suchen",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "close": "Schließen",
+    "open": "Öffnen"
+  },
+  "form": {
+    "required": "Dieses Feld ist erforderlich",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "message": "Nachricht",
+    "subject": "Betreff"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "forgotPassword": "Passwort vergessen",
+    "resetPassword": "Passwort zurücksetzen",
+    "emailVerification": "E-Mail-Verifizierung"
+  },
+  "blog": {
+    "readMore": "Weiterlesen",
+    "categories": "Kategorien",
+    "tags": "Tags",
+    "author": "Autor",
+    "publishedOn": "Veröffentlicht am",
+    "comments": "Kommentare",
+    "addComment": "Kommentar hinzufügen",
+    "noComments": "Keine Kommentare"
+  },
+  "seo": {
+    "home": {
+      "title": "Startseite - Ultra-Complete Web-Plattform",
+      "description": "Entdecken Sie unsere moderne und vollständige Web-Plattform mit Astro, TypeScript und nativem Design."
+    },
+    "about": {
+      "title": "Über uns - Unsere Geschichte",
+      "description": "Erfahren Sie mehr über unser Team und unsere Mission."
+    },
+    "blog": {
+      "title": "Blog - Artikel und Neuigkeiten",
+      "description": "Entdecken Sie unsere neuesten Artikel, Neuigkeiten und Tipps."
+    }
+  }
+}

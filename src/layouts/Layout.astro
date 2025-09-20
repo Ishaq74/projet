@@ -1,0 +1,172 @@
+---
+// Main Layout Component
+import type { Locale } from '../types/i18n';
+import { getLocaleConfig } from '../utils/i18n';
+
+export interface Props {
+  title: string;
+  description?: string;
+  locale: Locale;
+  canonicalUrl?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  twitterCard?: 'summary' | 'summary_large_image';
+  noIndex?: boolean;
+  jsonLd?: object;
+}
+
+const { 
+  title, 
+  description = '', 
+  locale, 
+  canonicalUrl,
+  ogImage = '/images/og-default.jpg',
+  ogType = 'website',
+  twitterCard = 'summary_large_image',
+  noIndex = false,
+  jsonLd
+} = Astro.props;
+
+const localeConfig = getLocaleConfig(locale);
+const siteUrl = Astro.site?.toString() || 'http://localhost:4321';
+const fullCanonicalUrl = canonicalUrl || Astro.url.toString();
+const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+---
+
+<!doctype html>
+<html lang={locale} dir={localeConfig.dir}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={fullCanonicalUrl} />
+    
+    <!-- Robots -->
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={fullCanonicalUrl} />
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:locale" content={locale} />
+    <meta property="og:site_name" content="Plateforme Web Ultra-Complète" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImage} />
+    
+    <!-- Hreflang for multilingual SEO -->
+    <link rel="alternate" hreflang="fr" href={`${siteUrl}/fr${Astro.url.pathname.replace(/^\/[a-z]{2}/, '')}`} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}/en${Astro.url.pathname.replace(/^\/[a-z]{2}/, '')}`} />
+    <link rel="alternate" hreflang="de" href={`${siteUrl}/de${Astro.url.pathname.replace(/^\/[a-z]{2}/, '')}`} />
+    <link rel="alternate" hreflang="es" href={`${siteUrl}/es${Astro.url.pathname.replace(/^\/[a-z]{2}/, '')}`} />
+    <link rel="alternate" hreflang="ar" href={`${siteUrl}/ar${Astro.url.pathname.replace(/^\/[a-z]{2}/, '')}`} />
+    <link rel="alternate" hreflang="zh" href={`${siteUrl}/zh${Astro.url.pathname.replace(/^\/[a-z]{2}/, '')}`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/fr${Astro.url.pathname.replace(/^\/[a-z]{2}/, '')}`} />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+    
+    <!-- JSON-LD Structured Data -->
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+    
+    <!-- Theme initialization script (prevent FOUC) -->
+    <script is:inline>
+      // Initialize theme before page render to prevent flash
+      const savedTheme = localStorage.getItem('theme');
+      const theme = savedTheme ? JSON.parse(savedTheme) : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    </script>
+    
+    <!-- Global Styles -->
+    <style>
+      @import '/src/styles/global.css';
+    </style>
+  </head>
+  
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <!-- Main Application -->
+    <div id="app" class="min-h-screen flex flex-col">
+      <!-- Header -->
+      <header class="header">
+        <div class="container">
+          <nav class="nav" role="navigation" aria-label="Main navigation">
+            <slot name="header" />
+          </nav>
+        </div>
+      </header>
+      
+      <!-- Main Content -->
+      <main id="main-content" class="main flex-1" role="main">
+        <slot />
+      </main>
+      
+      <!-- Footer -->
+      <footer class="footer" role="contentinfo">
+        <div class="container">
+          <slot name="footer" />
+        </div>
+      </footer>
+    </div>
+    
+    <!-- Theme and Locale Management Scripts -->
+    <script>
+      import { themeActions } from '/src/stores/theme.ts';
+      import { localeActions } from '/src/stores/locale.ts';
+      
+      // Initialize stores
+      themeActions.initTheme();
+      localeActions.initLocale();
+    </script>
+  </body>
+</html>
+
+<style>
+  /* Layout-specific styles */
+  .header {
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-primary);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+  }
+  
+  .main {
+    background-color: var(--bg-primary);
+    min-height: calc(100vh - 60px);
+  }
+  
+  .footer {
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border-primary);
+    margin-top: auto;
+  }
+  
+  /* Responsive container */
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+  }
+  
+  @media (min-width: 1536px) {
+    .container {
+      max-width: 1536px;
+    }
+  }
+</style>

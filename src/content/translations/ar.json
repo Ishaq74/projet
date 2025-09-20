@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "about": "حول",
+    "services": "الخدمات",
+    "training": "التدريب",
+    "blog": "المدونة",
+    "contact": "اتصل بنا",
+    "profile": "الملف الشخصي",
+    "admin": "الإدارة",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "edit": "تحرير",
+    "delete": "حذف",
+    "confirm": "تأكيد",
+    "search": "بحث",
+    "next": "التالي",
+    "previous": "السابق",
+    "close": "إغلاق",
+    "open": "فتح"
+  },
+  "form": {
+    "required": "هذا الحقل مطلوب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "message": "الرسالة",
+    "subject": "الموضوع"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "forgotPassword": "نسيت كلمة المرور",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "emailVerification": "تحقق من البريد الإلكتروني"
+  },
+  "blog": {
+    "readMore": "اقرأ المزيد",
+    "categories": "الفئات",
+    "tags": "الوسوم",
+    "author": "المؤلف",
+    "publishedOn": "نُشر في",
+    "comments": "التعليقات",
+    "addComment": "إضافة تعليق",
+    "noComments": "لا توجد تعليقات"
+  },
+  "seo": {
+    "home": {
+      "title": "الرئيسية - منصة ويب فائقة التكامل",
+      "description": "اكتشف منصتنا الحديثة والمتكاملة المبنية بـ Astro و TypeScript والتصميم الأصلي."
+    },
+    "about": {
+      "title": "حول - قصتنا",
+      "description": "تعرف أكثر على فريقنا ومهمتنا."
+    },
+    "blog": {
+      "title": "المدونة - مقالات وأخبار",
+      "description": "اكتشف أحدث مقالاتنا وأخبارنا ونصائحنا."
+    }
+  }
+}
