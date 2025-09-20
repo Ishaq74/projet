@@ -1,0 +1,473 @@
+---
+// Blog Category Page
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../../utils/i18n';
+import type { Locale } from '../../../types/i18n';
+
+export async function getStaticPaths() {
+  const categories = [
+    'development',
+    'accessibility', 
+    'internationalization',
+    'design',
+    'performance'
+  ];
+  
+  const paths = [];
+  
+  for (const localeConfig of locales) {
+    for (const category of categories) {
+      paths.push({
+        params: { 
+          locale: localeConfig.code,
+          category: category
+        },
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const { locale, category } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+// Mock blog posts for the category
+const allPosts = [
+  {
+    id: 1,
+    title: 'Building Modern Web Applications with Astro',
+    slug: 'building-modern-web-applications-with-astro',
+    excerpt: 'Learn how to create fast, SEO-friendly websites using Astro framework with islands architecture.',
+    publishedAt: new Date('2024-01-15'),
+    author: 'John Doe',
+    category: 'Development',
+    tags: ['Astro', 'TypeScript', 'Web Performance'],
+    readingTime: '5 min read'
+  },
+  {
+    id: 2,
+    title: 'The Importance of Web Accessibility',
+    slug: 'importance-of-web-accessibility',
+    excerpt: 'Understanding why accessibility matters and how to implement ARIA attributes and semantic HTML.',
+    publishedAt: new Date('2024-01-10'),
+    author: 'Jane Smith',
+    category: 'Accessibility',
+    tags: ['Accessibility', 'ARIA', 'UX'],
+    readingTime: '7 min read'
+  },
+  {
+    id: 3,
+    title: 'Internationalization Best Practices',
+    slug: 'internationalization-best-practices',
+    excerpt: 'How to build multilingual applications that provide great user experience across different cultures.',
+    publishedAt: new Date('2024-01-05'),
+    author: 'Alex Johnson',
+    category: 'Internationalization',
+    tags: ['i18n', 'Localization', 'Global UX'],
+    readingTime: '6 min read'
+  },
+  {
+    id: 4,
+    title: 'Modern CSS Design Patterns',
+    slug: 'modern-css-design-patterns',
+    excerpt: 'Explore the latest CSS techniques for creating beautiful and responsive designs.',
+    publishedAt: new Date('2024-01-12'),
+    author: 'Sarah Wilson',
+    category: 'Design',
+    tags: ['CSS', 'Design', 'Responsive'],
+    readingTime: '8 min read'
+  },
+  {
+    id: 5,
+    title: 'Web Performance Optimization Strategies',
+    slug: 'web-performance-optimization-strategies',
+    excerpt: 'Learn how to improve your website performance with these proven techniques.',
+    publishedAt: new Date('2024-01-08'),
+    author: 'Mike Chen',
+    category: 'Performance',
+    tags: ['Performance', 'Optimization', 'Speed'],
+    readingTime: '10 min read'
+  }
+];
+
+// Filter posts by category
+const categoryName = category?.charAt(0).toUpperCase() + category?.slice(1);
+const filteredPosts = allPosts.filter(post => 
+  post.category.toLowerCase() === category?.toLowerCase()
+);
+
+const title = `${categoryName} - ${t(translations, 'nav.blog')} - Salut Annecy`;
+const description = `Articles de blog sur ${categoryName} - Découvrez nos conseils et tutoriels.`;
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/blog" />
+  
+  <div class="container">
+    <section class="category-hero">
+      <nav class="breadcrumb">
+        <a href={`/${locale}/blog`}>{t(translations, 'nav.blog')}</a>
+        <span class="separator">›</span>
+        <span class="current">{categoryName}</span>
+      </nav>
+      
+      <h1 class="page-title">{categoryName}</h1>
+      <p class="page-description">
+        {filteredPosts.length} {filteredPosts.length === 1 ? 'article' : 'articles'} dans cette catégorie
+      </p>
+    </section>
+    
+    <div class="blog-layout">
+      <!-- Main Content -->
+      <main class="blog-main">
+        {filteredPosts.length > 0 ? (
+          <div class="posts-grid">
+            {filteredPosts.map((post) => (
+              <article class="post-card card">
+                <div class="card-body">
+                  <div class="post-meta">
+                    <span class="post-category">{post.category}</span>
+                    <span class="post-reading-time">{post.readingTime}</span>
+                  </div>
+                  
+                  <h2 class="post-title">
+                    <a href={`/${locale}/blog/${category}/${post.slug}`}>
+                      {post.title}
+                    </a>
+                  </h2>
+                  
+                  <p class="post-excerpt">{post.excerpt}</p>
+                  
+                  <div class="post-tags">
+                    {post.tags.map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                  
+                  <div class="post-footer">
+                    <div class="post-author">
+                      <span>{t(translations, 'blog.author')}: {post.author}</span>
+                    </div>
+                    <div class="post-date">
+                      <time datetime={post.publishedAt.toISOString()}>
+                        {post.publishedAt.toLocaleDateString(locale)}
+                      </time>
+                    </div>
+                  </div>
+                  
+                  <a href={`/${locale}/blog/${category}/${post.slug}`} class="btn btn-primary btn-sm">
+                    {t(translations, 'blog.readMore')}
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="no-posts">
+            <h3>Aucun article trouvé</h3>
+            <p>Il n'y a pas encore d'articles dans cette catégorie.</p>
+            <a href={`/${locale}/blog`} class="btn btn-primary">
+              Retour au blog
+            </a>
+          </div>
+        )}
+      </main>
+      
+      <!-- Sidebar -->
+      <aside class="blog-sidebar">
+        <!-- Back to Blog -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <a href={`/${locale}/blog`} class="btn btn-ghost btn-block">
+              ← Retour au blog
+            </a>
+          </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">{t(translations, 'blog.categories')}</h3>
+            <ul class="category-list">
+              <li><a href={`/${locale}/blog/development`} class={category === 'development' ? 'active' : ''}>Development</a></li>
+              <li><a href={`/${locale}/blog/accessibility`} class={category === 'accessibility' ? 'active' : ''}>Accessibility</a></li>
+              <li><a href={`/${locale}/blog/internationalization`} class={category === 'internationalization' ? 'active' : ''}>Internationalization</a></li>
+              <li><a href={`/${locale}/blog/design`} class={category === 'design' ? 'active' : ''}>Design</a></li>
+              <li><a href={`/${locale}/blog/performance`} class={category === 'performance' ? 'active' : ''}>Performance</a></li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .category-hero {
+    padding: 2rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .breadcrumb a {
+    color: #8b5cf6;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .separator {
+    color: #d1d5db;
+  }
+
+  .current {
+    font-weight: 600;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-description {
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .post-card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s;
+  }
+
+  .post-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .post-category {
+    background: #8b5cf6;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .post-reading-time {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .post-title {
+    margin-bottom: 1rem;
+  }
+
+  .post-title a {
+    color: #111827;
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .post-title a:hover {
+    color: #8b5cf6;
+  }
+
+  .post-excerpt {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-top: 1px solid #f3f4f6;
+    margin-bottom: 1rem;
+  }
+
+  .post-author,
+  .post-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #7c3aed;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #8b5cf6;
+    border: 1px solid #8b5cf6;
+  }
+
+  .btn-ghost:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-block {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .no-posts {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .no-posts h3 {
+    font-size: 1.5rem;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+
+  .no-posts p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+
+  .blog-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-widget {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .category-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .category-list a {
+    color: #6b7280;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    display: block;
+    transition: all 0.2s;
+  }
+
+  .category-list a:hover,
+  .category-list a.active {
+    background: #f3f4f6;
+    color: #8b5cf6;
+  }
+
+  @media (max-width: 768px) {
+    .blog-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+    }
+  }
+</style>

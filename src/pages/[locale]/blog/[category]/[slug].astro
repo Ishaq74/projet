@@ -1,0 +1,579 @@
+---
+// Individual Blog Post Page
+import Layout from '../../../../layouts/Layout.astro';
+import Navigation from '../../../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../../../utils/i18n';
+import type { Locale } from '../../../../types/i18n';
+
+export async function getStaticPaths() {
+  // Mock blog posts data
+  const posts = [
+    {
+      slug: 'building-modern-web-applications-with-astro',
+      category: 'development',
+      title: 'Building Modern Web Applications with Astro',
+      excerpt: 'Learn how to create fast, SEO-friendly websites using Astro framework with islands architecture.',
+      publishedAt: new Date('2024-01-15'),
+      author: 'John Doe',
+      tags: ['Astro', 'TypeScript', 'Web Performance'],
+      readingTime: '5 min read',
+      content: `
+        <p>Astro is a revolutionary framework that brings together the best of modern web development. In this comprehensive guide, we'll explore how to build fast, SEO-friendly websites using Astro's islands architecture.</p>
+        
+        <h2>What Makes Astro Special?</h2>
+        <p>Astro's unique approach to web development sets it apart from other frameworks. By shipping zero JavaScript by default and using partial hydration, Astro creates incredibly fast websites that still provide rich interactivity where needed.</p>
+        
+        <h2>Getting Started with Astro</h2>
+        <p>To begin your Astro journey, you'll need to set up a new project. The process is straightforward and well-documented.</p>
+        
+        <h2>Islands Architecture Explained</h2>
+        <p>The islands architecture is Astro's key innovation. Instead of sending a monolithic JavaScript bundle to the browser, Astro allows you to create "islands" of interactivity that can be hydrated independently.</p>
+        
+        <h2>Performance Benefits</h2>
+        <p>The performance benefits of using Astro are significant. By reducing JavaScript payload and optimizing for static content, Astro sites load faster and provide better user experiences.</p>
+        
+        <h2>Conclusion</h2>
+        <p>Astro represents the future of web development, combining the best aspects of static site generation with modern component-based development. Start your Astro journey today!</p>
+      `
+    },
+    {
+      slug: 'importance-of-web-accessibility',
+      category: 'accessibility',
+      title: 'The Importance of Web Accessibility',
+      excerpt: 'Understanding why accessibility matters and how to implement ARIA attributes and semantic HTML.',
+      publishedAt: new Date('2024-01-10'),
+      author: 'Jane Smith',
+      tags: ['Accessibility', 'ARIA', 'UX'],
+      readingTime: '7 min read',
+      content: `
+        <p>Web accessibility is not just a nice-to-have feature—it's a fundamental requirement for creating inclusive digital experiences. In this article, we'll explore why accessibility matters and how to implement it effectively.</p>
+        
+        <h2>Understanding Web Accessibility</h2>
+        <p>Web accessibility means ensuring that websites, tools, and technologies are designed and developed so that people with disabilities can use them effectively.</p>
+        
+        <h2>The Legal and Ethical Imperative</h2>
+        <p>Beyond being the right thing to do, accessibility is often a legal requirement. Many countries have laws requiring digital accessibility compliance.</p>
+        
+        <h2>ARIA Attributes in Practice</h2>
+        <p>ARIA (Accessible Rich Internet Applications) attributes provide additional semantic information to assistive technologies, helping them understand and navigate your content.</p>
+        
+        <h2>Semantic HTML: The Foundation</h2>
+        <p>Using proper HTML elements for their intended purpose is the first step toward accessibility. Semantic HTML provides meaning and structure that assistive technologies can understand.</p>
+        
+        <h2>Testing for Accessibility</h2>
+        <p>Regular accessibility testing should be part of your development workflow. Use both automated tools and manual testing to ensure your sites are truly accessible.</p>
+      `
+    },
+    {
+      slug: 'internationalization-best-practices',
+      category: 'internationalization',
+      title: 'Internationalization Best Practices',
+      excerpt: 'How to build multilingual applications that provide great user experience across different cultures.',
+      publishedAt: new Date('2024-01-05'),
+      author: 'Alex Johnson',
+      tags: ['i18n', 'Localization', 'Global UX'],
+      readingTime: '6 min read',
+      content: `
+        <p>Building applications for a global audience requires careful consideration of internationalization (i18n) from the very beginning of your project. This guide covers the essential best practices for creating truly international applications.</p>
+        
+        <h2>Planning for Internationalization</h2>
+        <p>The key to successful internationalization is planning ahead. Consider language requirements, cultural differences, and technical constraints early in your development process.</p>
+        
+        <h2>Text and Content Considerations</h2>
+        <p>Different languages have varying text lengths, reading directions, and cultural contexts. Your design must accommodate these variations gracefully.</p>
+        
+        <h2>Technical Implementation</h2>
+        <p>Choose the right tools and frameworks for internationalization. Modern frameworks like Astro provide excellent i18n support out of the box.</p>
+        
+        <h2>Cultural Sensitivity</h2>
+        <p>Beyond language translation, consider cultural differences in color symbolism, imagery, and user interface patterns.</p>
+        
+        <h2>Testing Across Locales</h2>
+        <p>Thorough testing across different locales is essential. Test with native speakers and consider both linguistic and cultural appropriateness.</p>
+      `
+    },
+    {
+      slug: 'modern-css-design-patterns',
+      category: 'design',
+      title: 'Modern CSS Design Patterns',
+      excerpt: 'Explore the latest CSS techniques for creating beautiful and responsive designs.',
+      publishedAt: new Date('2024-01-12'),
+      author: 'Sarah Wilson',
+      tags: ['CSS', 'Design', 'Responsive'],
+      readingTime: '8 min read',
+      content: `
+        <p>CSS has evolved tremendously in recent years, providing developers with powerful tools for creating sophisticated designs. This article explores the latest CSS design patterns that every developer should know.</p>
+        
+        <h2>Grid and Flexbox Mastery</h2>
+        <p>CSS Grid and Flexbox are fundamental tools for modern layout design. Understanding when and how to use each is crucial for creating responsive, flexible layouts.</p>
+        
+        <h2>Container Queries</h2>
+        <p>Container queries represent the next evolution in responsive design, allowing components to respond to their container's size rather than the viewport.</p>
+        
+        <h2>Custom Properties and Theming</h2>
+        <p>CSS custom properties (variables) enable dynamic theming and more maintainable stylesheets. Learn how to leverage them effectively.</p>
+        
+        <h2>Advanced Animations</h2>
+        <p>Modern CSS provides sophisticated animation capabilities. From simple transitions to complex keyframe animations, master the techniques for engaging user experiences.</p>
+        
+        <h2>Design System Integration</h2>
+        <p>CSS design patterns play a crucial role in maintaining consistency across large applications. Learn how to structure your CSS for scalability.</p>
+      `
+    },
+    {
+      slug: 'web-performance-optimization-strategies',
+      category: 'performance',
+      title: 'Web Performance Optimization Strategies',
+      excerpt: 'Learn how to improve your website performance with these proven techniques.',
+      publishedAt: new Date('2024-01-08'),
+      author: 'Mike Chen',
+      tags: ['Performance', 'Optimization', 'Speed'],
+      readingTime: '10 min read',
+      content: `
+        <p>Website performance directly impacts user experience, search rankings, and business outcomes. This comprehensive guide covers proven strategies for optimizing web performance.</p>
+        
+        <h2>Understanding Performance Metrics</h2>
+        <p>Before optimizing, you need to measure. Learn about Core Web Vitals and other key performance metrics that matter for your users and search engines.</p>
+        
+        <h2>Image Optimization</h2>
+        <p>Images often account for the majority of page weight. Discover techniques for optimizing images without sacrificing quality.</p>
+        
+        <h2>JavaScript Performance</h2>
+        <p>JavaScript can significantly impact performance if not handled properly. Learn strategies for optimizing JavaScript delivery and execution.</p>
+        
+        <h2>CSS Optimization</h2>
+        <p>CSS optimization involves more than just minification. Explore advanced techniques for optimizing CSS delivery and rendering performance.</p>
+        
+        <h2>Network Optimization</h2>
+        <p>Network requests are often the bottleneck for web performance. Learn how to minimize and optimize network usage for faster page loads.</p>
+        
+        <h2>Monitoring and Continuous Improvement</h2>
+        <p>Performance optimization is an ongoing process. Set up monitoring and establish processes for continuous performance improvement.</p>
+      `
+    }
+  ];
+  
+  const paths = [];
+  
+  for (const localeConfig of locales) {
+    for (const post of posts) {
+      paths.push({
+        params: { 
+          locale: localeConfig.code,
+          category: post.category,
+          slug: post.slug
+        },
+        props: { post }
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const { locale, category, slug } = Astro.params;
+const { post } = Astro.props;
+const translations = await loadTranslations(locale as Locale);
+
+const title = `${post.title} - ${t(translations, 'nav.blog')} - Salut Annecy`;
+const description = post.excerpt;
+
+const categoryName = category?.charAt(0).toUpperCase() + category?.slice(1);
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/blog" />
+  
+  <article class="blog-post">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href={`/${locale}/blog`}>{t(translations, 'nav.blog')}</a>
+        <span class="separator">›</span>
+        <a href={`/${locale}/blog/${category}`}>{categoryName}</a>
+        <span class="separator">›</span>
+        <span class="current">{post.title}</span>
+      </nav>
+      
+      <!-- Post Header -->
+      <header class="post-header">
+        <div class="post-meta">
+          <span class="post-category">{categoryName}</span>
+          <span class="post-reading-time">{post.readingTime}</span>
+        </div>
+        
+        <h1 class="post-title">{post.title}</h1>
+        <p class="post-excerpt">{post.excerpt}</p>
+        
+        <div class="post-info">
+          <div class="author-info">
+            <span class="author-label">{t(translations, 'blog.author')}:</span>
+            <span class="author-name">{post.author}</span>
+          </div>
+          <div class="post-date">
+            <time datetime={post.publishedAt.toISOString()}>
+              {post.publishedAt.toLocaleDateString(locale)}
+            </time>
+          </div>
+        </div>
+        
+        <div class="post-tags">
+          {post.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </header>
+      
+      <!-- Post Content -->
+      <div class="post-layout">
+        <main class="post-content">
+          <div class="prose" set:html={post.content} />
+          
+          <!-- Post Navigation -->
+          <nav class="post-navigation">
+            <div class="nav-links">
+              <a href={`/${locale}/blog/${category}`} class="nav-link nav-back">
+                ← Retour à {categoryName}
+              </a>
+              <a href={`/${locale}/blog`} class="nav-link nav-blog">
+                Tous les articles
+              </a>
+            </div>
+          </nav>
+        </main>
+        
+        <!-- Sidebar -->
+        <aside class="post-sidebar">
+          <div class="sidebar-widget card">
+            <div class="card-body">
+              <h3 class="widget-title">Dans cette catégorie</h3>
+              <a href={`/${locale}/blog/${category}`} class="btn btn-primary btn-block">
+                Voir tous les articles {categoryName}
+              </a>
+            </div>
+          </div>
+          
+          <div class="sidebar-widget card">
+            <div class="card-body">
+              <h3 class="widget-title">Partager</h3>
+              <div class="share-buttons">
+                <button class="share-btn share-twitter" onclick="shareOnTwitter()">
+                  Twitter
+                </button>
+                <button class="share-btn share-linkedin" onclick="shareOnLinkedIn()">
+                  LinkedIn
+                </button>
+                <button class="share-btn share-copy" onclick="copyLink()">
+                  Copier le lien
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<script>
+  function shareOnTwitter() {
+    const url = window.location.href;
+    const text = document.title;
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+  }
+  
+  function shareOnLinkedIn() {
+    const url = window.location.href;
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+  }
+  
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      alert('Lien copié dans le presse-papiers!');
+    });
+  }
+</script>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem 0 1rem 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .breadcrumb a {
+    color: #8b5cf6;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .separator {
+    color: #d1d5db;
+  }
+
+  .current {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .post-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .post-category {
+    background: #8b5cf6;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .post-reading-time {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .post-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .post-excerpt {
+    font-size: 1.25rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .post-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+  }
+
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .author-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .author-name {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .post-date {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .post-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .post-content {
+    min-width: 0;
+  }
+
+  .prose {
+    line-height: 1.7;
+    color: #374151;
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 2rem 0 1rem 0;
+    line-height: 1.3;
+  }
+
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+
+  .post-navigation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .nav-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .nav-link {
+    color: #8b5cf6;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #8b5cf6;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .nav-link:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .post-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-widget {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #7c3aed;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .share-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .share-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+  }
+
+  .share-btn:hover {
+    background: #f9fafb;
+    border-color: #8b5cf6;
+    color: #8b5cf6;
+  }
+
+  @media (max-width: 768px) {
+    .post-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .post-title {
+      font-size: 2rem;
+    }
+    
+    .post-excerpt {
+      font-size: 1.125rem;
+    }
+    
+    .post-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    
+    .nav-links {
+      flex-direction: column;
+    }
+    
+    .current {
+      max-width: 150px;
+    }
+  }
+</style>

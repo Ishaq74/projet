@@ -1,0 +1,915 @@
+---
+// Individual Annonce Page
+import Layout from '../../../../layouts/Layout.astro';
+import Navigation from '../../../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../../../utils/i18n';
+import type { Locale } from '../../../../types/i18n';
+
+export async function getStaticPaths() {
+  // Mock annonces data
+  const annonces = [
+    {
+      slug: "developpeur-full-stack-react-nodejs",
+      category: "emploi",
+      title: "Développeur Full Stack React/Node.js",
+      type: "CDI",
+      description: "Rejoignez notre équipe dynamique en tant que développeur full stack. Nous recherchons une personne motivée avec une solide expérience en développement web moderne.",
+      fullDescription: `
+        <h2>À propos du poste</h2>
+        <p>Nous recherchons un développeur full stack expérimenté pour rejoindre notre équipe technique. Vous travaillerez sur des projets innovants dans un environnement startup dynamique.</p>
+        
+        <h2>Responsabilités</h2>
+        <ul>
+          <li>Développement d'applications web avec React et Node.js</li>
+          <li>Conception et implémentation d'APIs REST</li>
+          <li>Collaboration avec l'équipe design et produit</li>
+          <li>Optimisation des performances et de l'expérience utilisateur</li>
+          <li>Participation aux revues de code et mentoring</li>
+        </ul>
+        
+        <h2>Profil recherché</h2>
+        <ul>
+          <li>3+ années d'expérience en développement web</li>
+          <li>Maîtrise de React, Node.js, MongoDB</li>
+          <li>Connaissance de TypeScript (un plus)</li>
+          <li>Expérience avec les outils DevOps (Docker, CI/CD)</li>
+          <li>Anglais technique courant</li>
+        </ul>
+        
+        <h2>Ce que nous offrons</h2>
+        <ul>
+          <li>Salaire compétitif selon expérience</li>
+          <li>Télétravail partiel possible</li>
+          <li>Formation continue et conférences</li>
+          <li>Ambiance startup avec équipe jeune</li>
+          <li>Mutuelle et tickets restaurant</li>
+        </ul>
+      `,
+      publishedAt: new Date('2024-01-15'),
+      author: "TechAnnecy",
+      location: "Annecy",
+      salary: "45-55k€",
+      contactEmail: "jobs@techannecy.fr",
+      contactPhone: "04 50 45 12 34",
+      tags: ["React", "Node.js", "MongoDB", "CDI", "Startup"],
+      isUrgent: true,
+      company: {
+        name: "TechAnnecy",
+        website: "https://techannecy.fr",
+        size: "20-50 employés",
+        sector: "Tech / Logiciel"
+      }
+    },
+    {
+      slug: "appartement-t3-vue-lac",
+      category: "immobilier",
+      title: "Appartement T3 avec vue sur le lac",
+      type: "Location",
+      description: "Magnifique T3 de 75m² avec terrasse et vue imprenable sur le lac d'Annecy. Proche centre-ville et commodités.",
+      fullDescription: `
+        <h2>Description du bien</h2>
+        <p>Superbe appartement T3 situé au 3ème étage d'un immeuble récent avec ascenseur. Vue panoramique sur le lac d'Annecy depuis le salon et la chambre principale.</p>
+        
+        <h2>Composition</h2>
+        <ul>
+          <li>Entrée avec placards</li>
+          <li>Salon-séjour de 30m² avec accès terrasse</li>
+          <li>Cuisine équipée ouverte</li>
+          <li>2 chambres (12m² et 10m²)</li>
+          <li>Salle de bain avec baignoire</li>
+          <li>WC séparé</li>
+          <li>Terrasse de 15m² exposée Sud-Ouest</li>
+        </ul>
+        
+        <h2>Prestations</h2>
+        <ul>
+          <li>Parquet dans les chambres</li>
+          <li>Carrelage dans les pièces d'eau</li>
+          <li>Double vitrage</li>
+          <li>Chauffage gaz individuel</li>
+          <li>Cave et place de parking incluses</li>
+        </ul>
+        
+        <h2>Environnement</h2>
+        <p>Quartier calme et résidentiel, à 5 minutes à pied du centre-ville d'Annecy. Proche écoles, commerces et transports en commun.</p>
+      `,
+      publishedAt: new Date('2024-01-14'),
+      author: "Marie Dubois",
+      location: "Annecy Centre",
+      price: "1200€/mois",
+      contactEmail: "marie.dubois@gmail.com",
+      contactPhone: "06 12 34 56 78",
+      tags: ["T3", "Terrasse", "Vue lac", "Centre-ville", "Parking"],
+      images: [
+        "/images/annonces/appart-t3-1.jpg",
+        "/images/annonces/appart-t3-2.jpg",
+        "/images/annonces/appart-t3-3.jpg"
+      ],
+      surface: "75m²",
+      charges: "150€/mois",
+      deposit: "1200€",
+      availability: "Immédiatement"
+    },
+    {
+      slug: "iphone-13-pro-max-excellent-etat",
+      category: "vente",
+      title: "iPhone 13 Pro Max - Excellent état",
+      type: "Vente",
+      description: "iPhone 13 Pro Max 256Go en excellent état, acheté il y a 8 mois. Aucun impact, aucune rayure.",
+      fullDescription: `
+        <h2>Description</h2>
+        <p>Je vends mon iPhone 13 Pro Max 256Go en excellent état. L'appareil a toujours été protégé par une coque et un verre trempé.</p>
+        
+        <h2>Caractéristiques</h2>
+        <ul>
+          <li>Modèle : iPhone 13 Pro Max</li>
+          <li>Capacité : 256 Go</li>
+          <li>Couleur : Bleu Alpin</li>
+          <li>État : Excellent (9/10)</li>
+          <li>Batterie : 94% de capacité maximale</li>
+          <li>Débloqué tous opérateurs</li>
+        </ul>
+        
+        <h2>Inclus</h2>
+        <ul>
+          <li>iPhone 13 Pro Max</li>
+          <li>Boîte d'origine</li>
+          <li>Câble Lightning vers USB-C</li>
+          <li>Documentation</li>
+          <li>Coque de protection offerte</li>
+          <li>Facture d'achat pour garantie</li>
+        </ul>
+        
+        <h2>Raison de la vente</h2>
+        <p>Changement professionnel, passage sur Android obligatoire.</p>
+      `,
+      publishedAt: new Date('2024-01-13'),
+      author: "Thomas Martin",
+      location: "Seynod",
+      price: "850€",
+      contactEmail: "thomas.martin@hotmail.fr",
+      contactPhone: "07 89 12 34 56",
+      tags: ["iPhone", "Apple", "256Go", "Excellent état", "Garantie"],
+      originalPrice: "1200€",
+      condition: "Excellent état",
+      warranty: "Garantie Apple jusqu'en septembre 2024"
+    },
+    {
+      slug: "services-jardinage-entretien",
+      category: "services",
+      title: "Services de jardinage et entretien",
+      type: "Service",
+      description: "Jardinier expérimenté propose ses services pour l'entretien de vos espaces verts. Devis gratuit, tarifs compétitifs.",
+      fullDescription: `
+        <h2>Services proposés</h2>
+        <p>Fort de 15 ans d'expérience dans l'entretien d'espaces verts, je propose mes services aux particuliers d'Annecy et environs.</p>
+        
+        <h2>Prestations</h2>
+        <ul>
+          <li>Tonte de pelouse</li>
+          <li>Taille de haies et arbustes</li>
+          <li>Débroussaillage</li>
+          <li>Plantation et rempotage</li>
+          <li>Entretien de massifs</li>
+          <li>Ramassage de feuilles</li>
+          <li>Petit élagage</li>
+          <li>Préparation de terrain</li>
+        </ul>
+        
+        <h2>Zones d'intervention</h2>
+        <ul>
+          <li>Annecy et ses quartiers</li>
+          <li>Annecy-le-Vieux</li>
+          <li>Seynod</li>
+          <li>Cran-Gevrier</li>
+          <li>Meythet</li>
+          <li>Dans un rayon de 20km</li>
+        </ul>
+        
+        <h2>Mes atouts</h2>
+        <ul>
+          <li>15 ans d'expérience</li>
+          <li>Matériel professionnel</li>
+          <li>Assurance responsabilité civile</li>
+          <li>Devis gratuit et détaillé</li>
+          <li>Paiement par chèque emploi service</li>
+          <li>Disponible week-ends</li>
+        </ul>
+      `,
+      publishedAt: new Date('2024-01-12'),
+      author: "Jardin & Nature",
+      location: "Annecy et environs",
+      price: "25€/h",
+      contactEmail: "contact@jardinnature.fr",
+      contactPhone: "04 50 45 99 88",
+      tags: ["Jardinage", "Tonte", "Taille", "Entretien", "Professionnel"],
+      availability: "Toute l'année",
+      certifications: ["Assurance RC Pro", "15 ans d'expérience"]
+    }
+  ];
+  
+  const paths = [];
+  
+  for (const localeConfig of locales) {
+    for (const annonce of annonces) {
+      paths.push({
+        params: { 
+          locale: localeConfig.code,
+          category: annonce.category,
+          slug: annonce.slug
+        },
+        props: { annonce }
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const { locale, category, slug } = Astro.params;
+const { annonce } = Astro.props;
+const translations = await loadTranslations(locale as Locale);
+
+const categoryMap: Record<string, string> = {
+  'emploi': 'Emploi',
+  'immobilier': 'Immobilier',
+  'vente': 'Vente',
+  'services': 'Services'
+};
+
+const categoryIcons: Record<string, string> = {
+  'emploi': '💼',
+  'immobilier': '🏠',
+  'vente': '🛍️',
+  'services': '🔧'
+};
+
+const categoryName = categoryMap[category as string] || category;
+const categoryIcon = categoryIcons[category as string] || '📋';
+const title = `${annonce.title} - ${categoryName} - ${t(translations, 'nav.annonces')} - Salut Annecy`;
+const description = annonce.description;
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/annonces" />
+  
+  <article class="annonce-page">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href={`/${locale}/annonces`}>{t(translations, 'nav.annonces')}</a>
+        <span class="separator">›</span>
+        <a href={`/${locale}/annonces/${category}`}>{categoryIcon} {categoryName}</a>
+        <span class="separator">›</span>
+        <span class="current">{annonce.title}</span>
+      </nav>
+      
+      <!-- Annonce Header -->
+      <header class="annonce-header">
+        {annonce.isUrgent && (
+          <div class="urgent-badge">🔥 URGENT</div>
+        )}
+        
+        <div class="header-main">
+          <div class="title-section">
+            <h1 class="annonce-title">{annonce.title}</h1>
+            <div class="annonce-meta-header">
+              <span class="annonce-type">{annonce.type}</span>
+              <span class="annonce-location">📍 {annonce.location}</span>
+              <span class="annonce-date">Publié le {annonce.publishedAt.toLocaleDateString('fr-FR')}</span>
+            </div>
+          </div>
+          
+          <div class="price-section">
+            {annonce.price && (
+              <div class="main-price">{annonce.price}</div>
+            )}
+            {annonce.salary && (
+              <div class="main-price">{annonce.salary}</div>
+            )}
+            {annonce.originalPrice && annonce.originalPrice !== annonce.price && (
+              <div class="original-price">Prix initial: {annonce.originalPrice}</div>
+            )}
+            {annonce.charges && (
+              <div class="charges">+ {annonce.charges} de charges</div>
+            )}
+          </div>
+        </div>
+      </header>
+      
+      <!-- Annonce Content -->
+      <div class="annonce-layout">
+        <main class="annonce-main">
+          <!-- Description -->
+          <section class="content-section">
+            <h2>Description</h2>
+            <div class="prose" set:html={annonce.fullDescription || `<p>${annonce.description}</p>`} />
+          </section>
+          
+          <!-- Details -->
+          <section class="content-section">
+            <h2>Informations complémentaires</h2>
+            <div class="details-grid">
+              {annonce.surface && (
+                <div class="detail-item">
+                  <span class="detail-label">📐 Surface:</span>
+                  <span class="detail-value">{annonce.surface}</span>
+                </div>
+              )}
+              {annonce.condition && (
+                <div class="detail-item">
+                  <span class="detail-label">✨ État:</span>
+                  <span class="detail-value">{annonce.condition}</span>
+                </div>
+              )}
+              {annonce.availability && (
+                <div class="detail-item">
+                  <span class="detail-label">📅 Disponibilité:</span>
+                  <span class="detail-value">{annonce.availability}</span>
+                </div>
+              )}
+              {annonce.deposit && (
+                <div class="detail-item">
+                  <span class="detail-label">💰 Dépôt de garantie:</span>
+                  <span class="detail-value">{annonce.deposit}</span>
+                </div>
+              )}
+              {annonce.warranty && (
+                <div class="detail-item">
+                  <span class="detail-label">🛡️ Garantie:</span>
+                  <span class="detail-value">{annonce.warranty}</span>
+                </div>
+              )}
+              {annonce.company && (
+                <div class="detail-item">
+                  <span class="detail-label">🏢 Entreprise:</span>
+                  <span class="detail-value">{annonce.company.name}</span>
+                </div>
+              )}
+              {annonce.company?.size && (
+                <div class="detail-item">
+                  <span class="detail-label">👥 Taille:</span>
+                  <span class="detail-value">{annonce.company.size}</span>
+                </div>
+              )}
+              {annonce.company?.sector && (
+                <div class="detail-item">
+                  <span class="detail-label">🏭 Secteur:</span>
+                  <span class="detail-value">{annonce.company.sector}</span>
+                </div>
+              )}
+            </div>
+          </section>
+          
+          <!-- Tags -->
+          <section class="content-section">
+            <h2>Tags</h2>
+            <div class="tags-list">
+              {annonce.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </section>
+          
+          <!-- Images Gallery -->
+          {annonce.images && annonce.images.length > 0 && (
+            <section class="content-section">
+              <h2>Photos</h2>
+              <div class="images-gallery">
+                {annonce.images.map((image, index) => (
+                  <div class="image-item">
+                    <img src={image} alt={`${annonce.title} - Photo ${index + 1}`} loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </main>
+        
+        <!-- Sidebar -->
+        <aside class="annonce-sidebar">
+          <!-- Contact -->
+          <div class="sidebar-widget card contact-widget">
+            <div class="card-body">
+              <h3 class="widget-title">Contacter {annonce.author}</h3>
+              <div class="contact-actions">
+                {annonce.contactPhone && (
+                  <a href={`tel:${annonce.contactPhone}`} class="btn btn-primary btn-block">
+                    📞 {annonce.contactPhone}
+                  </a>
+                )}
+                {annonce.contactEmail && (
+                  <a href={`mailto:${annonce.contactEmail}?subject=${encodeURIComponent(`Concernant: ${annonce.title}`)}`} class="btn btn-ghost btn-block">
+                    ✉️ Envoyer un email
+                  </a>
+                )}
+              </div>
+              
+              <div class="contact-info">
+                <div class="info-item">
+                  <span class="info-label">Annonceur:</span>
+                  <span class="info-value">{annonce.author}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Publié le:</span>
+                  <span class="info-value">{annonce.publishedAt.toLocaleDateString('fr-FR')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Navigation -->
+          <div class="sidebar-widget card">
+            <div class="card-body">
+              <h3 class="widget-title">Navigation</h3>
+              <div class="nav-links">
+                <a href={`/${locale}/annonces/${category}`} class="nav-link">
+                  ← Retour à {categoryName}
+                </a>
+                <a href={`/${locale}/annonces`} class="nav-link">
+                  Toutes les annonces
+                </a>
+                <a href={`/${locale}/annonces/deposer`} class="nav-link">
+                  Déposer une annonce
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Actions -->
+          <div class="sidebar-widget card">
+            <div class="card-body">
+              <h3 class="widget-title">Actions</h3>
+              <div class="action-buttons">
+                <button class="action-btn" onclick="shareAnnonce()">
+                  📤 Partager
+                </button>
+                <button class="action-btn" onclick="addToFavorites()">
+                  ❤️ Favoris
+                </button>
+                <button class="action-btn" onclick="reportAnnonce()">
+                  🚨 Signaler
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Warning -->
+          <div class="sidebar-widget card warning-widget">
+            <div class="card-body">
+              <h3 class="widget-title">⚠️ Sécurité</h3>
+              <p>Évitez les arnaques : privilégiez les rencontres en personne et les paiements sécurisés.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<script>
+  function shareAnnonce() {
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Lien copié dans le presse-papiers!');
+      });
+    }
+  }
+  
+  function addToFavorites() {
+    alert('Annonce ajoutée aux favoris!');
+  }
+  
+  function reportAnnonce() {
+    alert('Merci pour votre signalement. Nous allons examiner cette annonce.');
+  }
+</script>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem 0 1rem 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .breadcrumb a {
+    color: #8b5cf6;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .separator {
+    color: #d1d5db;
+  }
+
+  .current {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .annonce-header {
+    position: relative;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .urgent-badge {
+    position: absolute;
+    top: -0.5rem;
+    right: 0;
+    background: #dc2626;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .header-main {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .annonce-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .annonce-meta-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .annonce-type {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .annonce-location,
+  .annonce-date {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .price-section {
+    text-align: right;
+  }
+
+  .main-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #059669;
+    margin-bottom: 0.5rem;
+  }
+
+  .original-price {
+    color: #9ca3af;
+    text-decoration: line-through;
+    font-size: 0.875rem;
+  }
+
+  .charges {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .annonce-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .content-section {
+    margin-bottom: 3rem;
+  }
+
+  .content-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #8b5cf6;
+  }
+
+  .prose {
+    line-height: 1.7;
+    color: #374151;
+  }
+
+  .prose h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 2rem 0 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+  }
+
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+
+  .prose ul {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+  }
+
+  .detail-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .detail-value {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .images-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .image-item {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+  }
+
+  .image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s;
+  }
+
+  .image-item:hover img {
+    transform: scale(1.05);
+  }
+
+  .annonce-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-widget {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .contact-widget {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #7c3aed;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #8b5cf6;
+    border: 1px solid #8b5cf6;
+  }
+
+  .btn-ghost:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .info-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .info-value {
+    font-weight: 500;
+    color: #111827;
+    font-size: 0.875rem;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-link {
+    color: #8b5cf6;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+  }
+
+  .nav-link:hover {
+    background: #f3f4f6;
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+  }
+
+  .action-btn:hover {
+    background: #f9fafb;
+    border-color: #8b5cf6;
+    color: #8b5cf6;
+  }
+
+  .warning-widget {
+    background: linear-gradient(135deg, #fef2f2, #fecaca);
+  }
+
+  .warning-widget .widget-title {
+    color: #dc2626;
+  }
+
+  .warning-widget p {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .annonce-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .header-main {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    
+    .annonce-title {
+      font-size: 2rem;
+    }
+    
+    .annonce-meta-header {
+      justify-content: center;
+    }
+    
+    .price-section {
+      text-align: center;
+    }
+    
+    .details-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .images-gallery {
+      grid-template-columns: 1fr;
+    }
+    
+    .current {
+      max-width: 150px;
+    }
+  }
+</style>

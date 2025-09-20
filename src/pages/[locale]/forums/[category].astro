@@ -1,0 +1,761 @@
+---
+// Forum Category Page
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../../utils/i18n';
+import type { Locale } from '../../../types/i18n';
+
+export async function getStaticPaths() {
+  const categories = [
+    'vie-quotidienne',
+    'tourisme-decouverte',
+    'emploi-formation',
+    'evenements-sorties',
+    'petites-annonces'
+  ];
+  
+  const paths = [];
+  
+  for (const localeConfig of locales) {
+    for (const category of categories) {
+      paths.push({
+        params: { 
+          locale: localeConfig.code,
+          category: category
+        },
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const { locale, category } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+// Mock forum topics data
+const allTopics = [
+  {
+    id: 1,
+    title: "Meilleurs restaurants végétariens à Annecy ?",
+    slug: "meilleurs-restaurants-vegetariens-annecy",
+    category: "vie-quotidienne",
+    description: "Je cherche des recommandations pour des restaurants végétariens sympas à Annecy.",
+    author: "VeggieLife",
+    publishedAt: new Date('2024-01-15'),
+    replies: 12,
+    views: 145,
+    lastReply: {
+      author: "LocalFoodie",
+      date: new Date('2024-01-15T11:30:00Z')
+    },
+    tags: ["restaurants", "végétarien", "recommandations"],
+    isPinned: true,
+    isLocked: false
+  },
+  {
+    id: 2,
+    title: "Quartiers pour jeunes familles - conseils ?",
+    slug: "quartiers-jeunes-familles-conseils",
+    category: "vie-quotidienne",
+    description: "Nous allons déménager à Annecy avec nos deux enfants. Quels quartiers recommandez-vous ?",
+    author: "Marie_Annecy",
+    publishedAt: new Date('2024-01-14'),
+    replies: 8,
+    views: 89,
+    lastReply: {
+      author: "Papa74",
+      date: new Date('2024-01-14T16:45:00Z')
+    },
+    tags: ["quartiers", "famille", "enfants", "logement"],
+    isPinned: false,
+    isLocked: false
+  },
+  {
+    id: 3,
+    title: "Randonnée au Semnoz accessible en hiver ?",
+    slug: "randonnee-semnoz-accessible-hiver",
+    category: "tourisme-decouverte",
+    description: "Est-ce que les sentiers du Semnoz sont praticables en cette saison ?",
+    author: "RandoSavoie",
+    publishedAt: new Date('2024-01-14'),
+    replies: 15,
+    views: 234,
+    lastReply: {
+      author: "MontagnardAnnecy",
+      date: new Date('2024-01-14T18:20:00Z')
+    },
+    tags: ["randonnée", "semnoz", "hiver", "montagne"],
+    isPinned: false,
+    isLocked: false
+  },
+  {
+    id: 4,
+    title: "Recherche développeur web expérimenté",
+    slug: "recherche-developpeur-web-experimente",
+    category: "emploi-formation",
+    description: "Startup tech cherche développeur full-stack pour rejoindre notre équipe.",
+    author: "TechAnnecy",
+    publishedAt: new Date('2024-01-14'),
+    replies: 6,
+    views: 78,
+    lastReply: {
+      author: "DevAnnecy",
+      date: new Date('2024-01-14T09:15:00Z')
+    },
+    tags: ["emploi", "développeur", "startup", "full-stack"],
+    isPinned: false,
+    isLocked: false
+  },
+  {
+    id: 5,
+    title: "Soirée board game ce weekend - qui est partant ?",
+    slug: "soiree-board-game-weekend-partant",
+    category: "evenements-sorties",
+    description: "Organisation d'une soirée jeux de société samedi soir. Qui veut se joindre à nous ?",
+    author: "JeuAnnecy",
+    publishedAt: new Date('2024-01-13'),
+    replies: 9,
+    views: 67,
+    lastReply: {
+      author: "GameFan74",
+      date: new Date('2024-01-13T20:30:00Z')
+    },
+    tags: ["jeux", "soirée", "weekend", "rencontre"],
+    isPinned: false,
+    isLocked: false
+  },
+  {
+    id: 6,
+    title: "Vends vélo électrique en excellent état",
+    slug: "vends-velo-electrique-excellent-etat",
+    category: "petites-annonces",
+    description: "Vélo électrique Decathlon, 2 ans, très peu servi. 800€ négociable.",
+    author: "CycloAnnecy",
+    publishedAt: new Date('2024-01-13'),
+    replies: 4,
+    views: 56,
+    lastReply: {
+      author: "BikeCollector",
+      date: new Date('2024-01-13T14:20:00Z')
+    },
+    tags: ["vélo", "électrique", "vente", "occasion"],
+    isPinned: false,
+    isLocked: false
+  }
+];
+
+// Category mapping for display
+const categoryMap: Record<string, any> = {
+  'vie-quotidienne': {
+    name: 'Vie Quotidienne à Annecy',
+    icon: '🏠',
+    description: 'Questions pratiques, bons plans et conseils pour vivre à Annecy'
+  },
+  'tourisme-decouverte': {
+    name: 'Tourisme et Découverte',
+    icon: '🗺️',
+    description: 'Conseils pour visiter Annecy et ses environs'
+  },
+  'emploi-formation': {
+    name: 'Emploi et Formation',
+    icon: '💼',
+    description: 'Offres d\'emploi, conseils carrière et formations'
+  },
+  'evenements-sorties': {
+    name: 'Événements et Sorties',
+    icon: '🎉',
+    description: 'Organiser et partager les événements locaux'
+  },
+  'petites-annonces': {
+    name: 'Petites Annonces',
+    icon: '🛒',
+    description: 'Acheter, vendre, échanger entre voisins'
+  }
+};
+
+const categoryInfo = categoryMap[category as string] || {
+  name: category,
+  icon: '💬',
+  description: 'Discussions de la communauté'
+};
+
+const filteredTopics = allTopics.filter(topic => topic.category === category);
+
+const title = `${categoryInfo.name} - ${t(translations, 'nav.forums')} - Salut Annecy`;
+const description = categoryInfo.description;
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/forums" />
+  
+  <div class="container">
+    <section class="category-hero">
+      <nav class="breadcrumb">
+        <a href={`/${locale}/forums`}>{t(translations, 'nav.forums')}</a>
+        <span class="separator">›</span>
+        <span class="current">{categoryInfo.icon} {categoryInfo.name}</span>
+      </nav>
+      
+      <div class="category-header">
+        <div class="category-info">
+          <h1 class="page-title">{categoryInfo.icon} {categoryInfo.name}</h1>
+          <p class="page-description">{categoryInfo.description}</p>
+          <div class="category-stats">
+            <span class="stat">{filteredTopics.length} sujets</span>
+            <span class="stat">{filteredTopics.reduce((acc, topic) => acc + topic.replies, 0)} messages</span>
+          </div>
+        </div>
+        
+        <div class="category-actions">
+          <a href={`/${locale}/forums/${category}/nouveau-sujet`} class="btn btn-primary btn-lg">
+            Nouveau sujet
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <div class="forum-layout">
+      <!-- Main Content -->
+      <main class="forum-main">
+        {filteredTopics.length > 0 ? (
+          <div class="topics-list">
+            <!-- Pinned Topics -->
+            {filteredTopics.filter(topic => topic.isPinned).map((topic) => (
+              <article class="topic-card pinned">
+                <div class="topic-icons">
+                  <span class="pin-icon" title="Sujet épinglé">📌</span>
+                  {topic.isLocked && <span class="lock-icon" title="Sujet verrouillé">🔒</span>}
+                </div>
+                
+                <div class="topic-content">
+                  <h3 class="topic-title">
+                    <a href={`/${locale}/forums/${category}/${topic.slug}`}>
+                      {topic.title}
+                    </a>
+                  </h3>
+                  <p class="topic-description">{topic.description}</p>
+                  
+                  <div class="topic-meta">
+                    <span class="topic-author">Par <strong>{topic.author}</strong></span>
+                    <span class="topic-date">{topic.publishedAt.toLocaleDateString('fr-FR')}</span>
+                  </div>
+                  
+                  <div class="topic-tags">
+                    {topic.tags.slice(0, 3).map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+                
+                <div class="topic-stats">
+                  <div class="stat-item">
+                    <span class="stat-value">{topic.replies}</span>
+                    <span class="stat-label">réponses</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-value">{topic.views}</span>
+                    <span class="stat-label">vues</span>
+                  </div>
+                </div>
+                
+                <div class="last-reply">
+                  <div class="last-reply-author">{topic.lastReply.author}</div>
+                  <div class="last-reply-date">
+                    {topic.lastReply.date.toLocaleDateString('fr-FR')} à {topic.lastReply.date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
+              </article>
+            ))}
+            
+            <!-- Regular Topics -->
+            {filteredTopics.filter(topic => !topic.isPinned).map((topic) => (
+              <article class="topic-card">
+                <div class="topic-icons">
+                  {topic.isLocked && <span class="lock-icon" title="Sujet verrouillé">🔒</span>}
+                </div>
+                
+                <div class="topic-content">
+                  <h3 class="topic-title">
+                    <a href={`/${locale}/forums/${category}/${topic.slug}`}>
+                      {topic.title}
+                    </a>
+                  </h3>
+                  <p class="topic-description">{topic.description}</p>
+                  
+                  <div class="topic-meta">
+                    <span class="topic-author">Par <strong>{topic.author}</strong></span>
+                    <span class="topic-date">{topic.publishedAt.toLocaleDateString('fr-FR')}</span>
+                  </div>
+                  
+                  <div class="topic-tags">
+                    {topic.tags.slice(0, 3).map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+                
+                <div class="topic-stats">
+                  <div class="stat-item">
+                    <span class="stat-value">{topic.replies}</span>
+                    <span class="stat-label">réponses</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-value">{topic.views}</span>
+                    <span class="stat-label">vues</span>
+                  </div>
+                </div>
+                
+                <div class="last-reply">
+                  <div class="last-reply-author">{topic.lastReply.author}</div>
+                  <div class="last-reply-date">
+                    {topic.lastReply.date.toLocaleDateString('fr-FR')} à {topic.lastReply.date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="no-topics">
+            <h3>Aucun sujet dans cette catégorie</h3>
+            <p>Soyez le premier à lancer une discussion !</p>
+            <a href={`/${locale}/forums/${category}/nouveau-sujet`} class="btn btn-primary">
+              Créer le premier sujet
+            </a>
+          </div>
+        )}
+      </main>
+      
+      <!-- Sidebar -->
+      <aside class="forum-sidebar">
+        <!-- Quick Actions -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">Actions rapides</h3>
+            <div class="quick-actions">
+              <a href={`/${locale}/forums/${category}/nouveau-sujet`} class="btn btn-primary btn-block">
+                Nouveau sujet
+              </a>
+              <a href={`/${locale}/forums`} class="btn btn-ghost btn-block">
+                Toutes les catégories
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">Catégories</h3>
+            <ul class="category-list">
+              <li><a href={`/${locale}/forums/vie-quotidienne`} class={category === 'vie-quotidienne' ? 'active' : ''}>🏠 Vie Quotidienne</a></li>
+              <li><a href={`/${locale}/forums/tourisme-decouverte`} class={category === 'tourisme-decouverte' ? 'active' : ''}>🗺️ Tourisme</a></li>
+              <li><a href={`/${locale}/forums/emploi-formation`} class={category === 'emploi-formation' ? 'active' : ''}>💼 Emploi</a></li>
+              <li><a href={`/${locale}/forums/evenements-sorties`} class={category === 'evenements-sorties' ? 'active' : ''}>🎉 Événements</a></li>
+              <li><a href={`/${locale}/forums/petites-annonces`} class={category === 'petites-annonces' ? 'active' : ''}>🛒 Annonces</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Forum Rules -->
+        <div class="sidebar-widget card rules-widget">
+          <div class="card-body">
+            <h3 class="widget-title">📋 Règles du forum</h3>
+            <ul class="rules-list">
+              <li>Respectez les autres membres</li>
+              <li>Restez dans le sujet</li>
+              <li>Pas de contenu inapproprié</li>
+              <li>Utilisez des titres descriptifs</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .category-hero {
+    padding: 2rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .breadcrumb a {
+    color: #8b5cf6;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .separator {
+    color: #d1d5db;
+  }
+
+  .current {
+    font-weight: 600;
+  }
+
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-description {
+    font-size: 1.125rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+  }
+
+  .category-stats {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .stat {
+    color: #374151;
+    font-weight: 500;
+  }
+
+  .forum-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .topics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .topic-card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 30px 1fr auto auto;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .topic-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .topic-card.pinned {
+    background: linear-gradient(135deg, #fef3c7, #fef08a);
+    border: 1px solid #f59e0b;
+  }
+
+  .topic-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .pin-icon {
+    color: #f59e0b;
+    font-size: 1.125rem;
+  }
+
+  .lock-icon {
+    color: #6b7280;
+    font-size: 1rem;
+  }
+
+  .topic-content {
+    min-width: 0;
+  }
+
+  .topic-title {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .topic-title a {
+    color: #111827;
+    text-decoration: none;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .topic-title a:hover {
+    color: #8b5cf6;
+  }
+
+  .topic-description {
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .topic-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .topic-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .topic-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-value {
+    font-weight: 600;
+    color: #111827;
+    font-size: 1.125rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .last-reply {
+    text-align: right;
+    min-width: 120px;
+  }
+
+  .last-reply-author {
+    font-weight: 500;
+    color: #111827;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .last-reply-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .no-topics {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .no-topics h3 {
+    font-size: 1.5rem;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+
+  .no-topics p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+
+  .btn-primary {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #7c3aed;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #8b5cf6;
+    border: 1px solid #8b5cf6;
+  }
+
+  .btn-ghost:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .forum-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-widget {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .category-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .category-list a {
+    color: #6b7280;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    display: block;
+    transition: all 0.2s;
+  }
+
+  .category-list a:hover,
+  .category-list a.active {
+    background: #f3f4f6;
+    color: #8b5cf6;
+  }
+
+  .rules-widget {
+    background: linear-gradient(135deg, #fef2f2, #fecaca);
+  }
+
+  .rules-widget .widget-title {
+    color: #dc2626;
+  }
+
+  .rules-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .rules-list li {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .rules-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #dc2626;
+  }
+
+  @media (max-width: 768px) {
+    .forum-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .category-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+    }
+    
+    .topic-card {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .topic-stats {
+      flex-direction: row;
+      justify-content: space-around;
+    }
+    
+    .last-reply {
+      text-align: left;
+    }
+  }
+</style>

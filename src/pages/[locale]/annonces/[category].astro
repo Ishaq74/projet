@@ -1,0 +1,710 @@
+---
+// Annonces Category Page
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../../utils/i18n';
+import type { Locale } from '../../../types/i18n';
+
+export async function getStaticPaths() {
+  const categories = [
+    'emploi',
+    'immobilier', 
+    'vente',
+    'services'
+  ];
+  
+  const paths = [];
+  
+  for (const localeConfig of locales) {
+    for (const category of categories) {
+      paths.push({
+        params: { 
+          locale: localeConfig.code,
+          category: category
+        },
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const { locale, category } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+// Mock annonces data
+const allAnnonces = [
+  {
+    id: 1,
+    title: "Développeur Full Stack React/Node.js",
+    slug: "developpeur-full-stack-react-nodejs",
+    category: "emploi",
+    type: "CDI",
+    description: "Rejoignez notre équipe dynamique en tant que développeur full stack. Expérience requise en React, Node.js et MongoDB.",
+    publishedAt: new Date('2024-01-15'),
+    author: "TechAnnecy",
+    location: "Annecy",
+    salary: "45-55k€",
+    contactEmail: "jobs@techannecy.fr",
+    contactPhone: "04 50 45 12 34",
+    tags: ["React", "Node.js", "MongoDB", "CDI"],
+    isUrgent: true
+  },
+  {
+    id: 2,
+    title: "Appartement T3 avec vue sur le lac",
+    slug: "appartement-t3-vue-lac",
+    category: "immobilier",
+    type: "Location",
+    description: "Magnifique T3 de 75m² avec terrasse et vue imprenable sur le lac d'Annecy. Proche centre-ville.",
+    publishedAt: new Date('2024-01-14'),
+    author: "Marie Dubois",
+    location: "Annecy Centre",
+    price: "1200€/mois",
+    contactEmail: "marie.dubois@gmail.com",
+    contactPhone: "06 12 34 56 78",
+    tags: ["T3", "Terrasse", "Vue lac", "Centre-ville"],
+    images: ["/images/annonces/appart-t3-1.jpg"],
+    surface: "75m²"
+  },
+  {
+    id: 3,
+    title: "iPhone 13 Pro Max - Excellent état",
+    slug: "iphone-13-pro-max-excellent-etat",
+    category: "vente",
+    type: "Vente",
+    description: "iPhone 13 Pro Max 256Go en excellent état, acheté il y a 8 mois. Facture d'achat et accessoires d'origine inclus.",
+    publishedAt: new Date('2024-01-13'),
+    author: "Thomas Martin",
+    location: "Seynod",
+    price: "850€",
+    contactEmail: "thomas.martin@hotmail.fr",
+    contactPhone: "07 89 12 34 56",
+    tags: ["iPhone", "Apple", "256Go", "Excellent état"],
+    originalPrice: "1200€"
+  },
+  {
+    id: 4,
+    title: "Services de jardinage et entretien",
+    slug: "services-jardinage-entretien",
+    category: "services",
+    type: "Service",
+    description: "Jardinier expérimenté propose ses services : tonte, taille, débroussaillage, entretien général. Devis gratuit.",
+    publishedAt: new Date('2024-01-12'),
+    author: "Jardin & Nature",
+    location: "Annecy et environs",
+    price: "25€/h",
+    contactEmail: "contact@jardinnature.fr",
+    contactPhone: "04 50 45 99 88",
+    tags: ["Jardinage", "Tonte", "Taille", "Entretien"],
+    availability: "Toute l'année"
+  },
+  {
+    id: 5,
+    title: "Chef de projet marketing digital",
+    slug: "chef-projet-marketing-digital",
+    category: "emploi",
+    type: "CDI",
+    description: "Nous recherchons un chef de projet marketing digital pour développer notre présence en ligne et manager une équipe de 3 personnes.",
+    publishedAt: new Date('2024-01-11'),
+    author: "Annecy Digital",
+    location: "Annecy",
+    salary: "40-50k€",
+    contactEmail: "rh@annecydigital.com",
+    contactPhone: "04 50 45 77 66",
+    tags: ["Marketing", "Digital", "Chef de projet", "Management"],
+    isUrgent: false
+  }
+];
+
+// Category mapping for display
+const categoryMap: Record<string, string> = {
+  'emploi': 'Emploi',
+  'immobilier': 'Immobilier',
+  'vente': 'Vente',
+  'services': 'Services'
+};
+
+const categoryIcons: Record<string, string> = {
+  'emploi': '💼',
+  'immobilier': '🏠',
+  'vente': '🛍️',
+  'services': '🔧'
+};
+
+const categoryName = categoryMap[category as string] || category;
+const categoryIcon = categoryIcons[category as string] || '📋';
+const filteredAnnonces = allAnnonces.filter(annonce => annonce.category === category);
+
+const title = `${categoryName} - ${t(translations, 'nav.annonces')} - Salut Annecy`;
+const description = `Petites annonces ${categoryName.toLowerCase()} à Annecy - Trouvez ou déposez vos annonces gratuitement.`;
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/annonces" />
+  
+  <div class="container">
+    <section class="category-hero">
+      <nav class="breadcrumb">
+        <a href={`/${locale}/annonces`}>{t(translations, 'nav.annonces')}</a>
+        <span class="separator">›</span>
+        <span class="current">{categoryIcon} {categoryName}</span>
+      </nav>
+      
+      <h1 class="page-title">{categoryIcon} {categoryName}</h1>
+      <p class="page-description">
+        {filteredAnnonces.length} {filteredAnnonces.length === 1 ? 'annonce' : 'annonces'} dans cette catégorie
+      </p>
+      
+      <div class="category-actions">
+        <a href={`/${locale}/annonces/deposer?categorie=${category}`} class="btn btn-primary btn-lg">
+          Déposer une annonce {categoryName.toLowerCase()}
+        </a>
+      </div>
+    </section>
+    
+    <div class="annonces-layout">
+      <!-- Main Content -->
+      <main class="annonces-main">
+        {filteredAnnonces.length > 0 ? (
+          <div class="annonces-grid">
+            {filteredAnnonces.map((annonce) => (
+              <article class="annonce-card">
+                {annonce.isUrgent && (
+                  <div class="urgent-badge">🔥 URGENT</div>
+                )}
+                
+                <div class="annonce-header">
+                  <h3 class="annonce-title">
+                    <a href={`/${locale}/annonces/${category}/${annonce.slug}`}>
+                      {annonce.title}
+                    </a>
+                  </h3>
+                  <div class="annonce-type">{annonce.type}</div>
+                </div>
+                
+                <p class="annonce-description">{annonce.description}</p>
+                
+                <div class="annonce-meta">
+                  <div class="meta-row">
+                    <span class="meta-label">📍 Lieu:</span>
+                    <span class="meta-value">{annonce.location}</span>
+                  </div>
+                  {annonce.price && (
+                    <div class="meta-row">
+                      <span class="meta-label">💰 Prix:</span>
+                      <span class="meta-value price">{annonce.price}</span>
+                    </div>
+                  )}
+                  {annonce.salary && (
+                    <div class="meta-row">
+                      <span class="meta-label">💰 Salaire:</span>
+                      <span class="meta-value salary">{annonce.salary}</span>
+                    </div>
+                  )}
+                  {annonce.surface && (
+                    <div class="meta-row">
+                      <span class="meta-label">📐 Surface:</span>
+                      <span class="meta-value">{annonce.surface}</span>
+                    </div>
+                  )}
+                </div>
+                
+                <div class="annonce-tags">
+                  {annonce.tags.slice(0, 3).map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                  {annonce.tags.length > 3 && (
+                    <span class="tag-more">+{annonce.tags.length - 3}</span>
+                  )}
+                </div>
+                
+                <div class="annonce-footer">
+                  <div class="annonce-author">
+                    Par <strong>{annonce.author}</strong>
+                  </div>
+                  <div class="annonce-date">
+                    {annonce.publishedAt.toLocaleDateString('fr-FR')}
+                  </div>
+                </div>
+                
+                <div class="annonce-actions">
+                  <a href={`/${locale}/annonces/${category}/${annonce.slug}`} class="btn btn-primary">
+                    Voir les détails
+                  </a>
+                  {annonce.contactPhone && (
+                    <a href={`tel:${annonce.contactPhone}`} class="btn btn-ghost">
+                      📞 Appeler
+                    </a>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="no-annonces">
+            <h3>Aucune annonce trouvée</h3>
+            <p>Il n'y a pas encore d'annonces dans cette catégorie.</p>
+            <a href={`/${locale}/annonces/deposer?categorie=${category}`} class="btn btn-primary">
+              Soyez le premier à déposer une annonce
+            </a>
+          </div>
+        )}
+      </main>
+      
+      <!-- Sidebar -->
+      <aside class="annonces-sidebar">
+        <!-- Quick Actions -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">Actions rapides</h3>
+            <div class="quick-actions">
+              <a href={`/${locale}/annonces/deposer?categorie=${category}`} class="btn btn-primary btn-block">
+                Déposer une annonce
+              </a>
+              <a href={`/${locale}/annonces`} class="btn btn-ghost btn-block">
+                Toutes les catégories
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">Catégories</h3>
+            <ul class="category-list">
+              <li><a href={`/${locale}/annonces/emploi`} class={category === 'emploi' ? 'active' : ''}>💼 Emploi</a></li>
+              <li><a href={`/${locale}/annonces/immobilier`} class={category === 'immobilier' ? 'active' : ''}>🏠 Immobilier</a></li>
+              <li><a href={`/${locale}/annonces/vente`} class={category === 'vente' ? 'active' : ''}>🛍️ Vente</a></li>
+              <li><a href={`/${locale}/annonces/services`} class={category === 'services' ? 'active' : ''}>🔧 Services</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">Filtres</h3>
+            <div class="filters">
+              <label class="filter-item">
+                <input type="checkbox" /> Annonces urgentes uniquement
+              </label>
+              <label class="filter-item">
+                <input type="checkbox" /> Avec photo
+              </label>
+              <label class="filter-item">
+                <input type="checkbox" /> Récentes (&lt; 7 jours)
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Help -->
+        <div class="sidebar-widget card help-widget">
+          <div class="card-body">
+            <h3 class="widget-title">💡 Conseil</h3>
+            <p>Pour une annonce efficace, ajoutez des photos et soyez précis dans votre description.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .category-hero {
+    padding: 2rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .breadcrumb a {
+    color: #8b5cf6;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .separator {
+    color: #d1d5db;
+  }
+
+  .current {
+    font-weight: 600;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-description {
+    font-size: 1.125rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+  }
+
+  .category-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .annonces-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .annonces-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .annonce-card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s;
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .annonce-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .urgent-badge {
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+    background: #dc2626;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .annonce-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .annonce-title {
+    margin: 0;
+    flex: 1;
+  }
+
+  .annonce-title a {
+    color: #111827;
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .annonce-title a:hover {
+    color: #8b5cf6;
+  }
+
+  .annonce-type {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .annonce-description {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .annonce-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .meta-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .meta-value {
+    font-weight: 500;
+    color: #111827;
+  }
+
+  .meta-value.price,
+  .meta-value.salary {
+    color: #059669;
+    font-weight: 600;
+  }
+
+  .annonce-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .tag-more {
+    background: #e5e7eb;
+    color: #6b7280;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+
+  .annonce-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-top: 1px solid #f3f4f6;
+    margin-bottom: 1rem;
+  }
+
+  .annonce-author {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .annonce-date {
+    font-size: 0.875rem;
+    color: #9ca3af;
+  }
+
+  .annonce-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+
+  .btn-primary {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #7c3aed;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #8b5cf6;
+    border: 1px solid #8b5cf6;
+  }
+
+  .btn-ghost:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .no-annonces {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .no-annonces h3 {
+    font-size: 1.5rem;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+
+  .no-annonces p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+
+  .annonces-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-widget {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .category-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .category-list a {
+    color: #6b7280;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    display: block;
+    transition: all 0.2s;
+  }
+
+  .category-list a:hover,
+  .category-list a.active {
+    background: #f3f4f6;
+    color: #8b5cf6;
+  }
+
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .filter-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #374151;
+  }
+
+  .help-widget {
+    background: linear-gradient(135deg, #fef3c7, #fbbf24);
+  }
+
+  .help-widget .widget-title {
+    color: #92400e;
+  }
+
+  .help-widget p {
+    color: #92400e;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .annonces-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+    }
+    
+    .annonce-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .annonce-actions {
+      flex-direction: column;
+    }
+    
+    .category-actions {
+      flex-direction: column;
+    }
+    
+    .meta-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+  }
+</style>
