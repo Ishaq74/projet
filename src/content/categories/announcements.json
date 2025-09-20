@@ -1,0 +1,15 @@
+{
+  "name": "Announcements",
+  "slug": "announcements",
+  "description": "Official announcements and platform news",
+  "color": "#10b981",
+  "icon": "megaphone",
+  "locale": "en",
+  "translations": {
+    "fr": "annonces",
+    "de": "ankündigungen",
+    "es": "anuncios",
+    "ar": "إعلانات",
+    "zh": "公告"
+  }
+}

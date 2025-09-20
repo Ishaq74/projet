@@ -1,7 +1,6 @@
 ---
 // Blog Article Card Component
 import type { Locale } from '../../types/i18n';
-import { t, loadTranslations } from '../../utils/i18n';
 import { format } from 'date-fns';
 import { fr, enUS as en, de, es } from 'date-fns/locale';
 
@@ -41,7 +40,7 @@ const {
   size = 'medium' 
 } = Astro.props;
 
-const translations = await loadTranslations(locale);
+
 
 // Date formatting
 const dateLocales = { fr, en, de, es };

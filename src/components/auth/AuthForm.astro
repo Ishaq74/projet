@@ -12,7 +12,7 @@ export interface Props {
   redirectTo?: string;
 }
 
-const { locale, type, title, submitText, extraFields = false, redirectTo = '/' } = Astro.props;
+const { locale, type, title, submitText, redirectTo = '/' } = Astro.props;
 const translations = await loadTranslations(locale);
 ---
 

@@ -1,0 +1,15 @@
+{
+  "name": "Guides",
+  "slug": "guides", 
+  "description": "Guides et tutoriels pour utiliser la plateforme",
+  "color": "#8b5cf6",
+  "icon": "book",
+  "locale": "fr",
+  "translations": {
+    "en": "guides",
+    "de": "leitfäden",
+    "es": "guías",
+    "ar": "أدلة",
+    "zh": "指南"
+  }
+}
