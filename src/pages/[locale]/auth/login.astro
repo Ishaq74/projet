@@ -1,0 +1,27 @@
+---
+// Login Page
+import Layout from '../../../layouts/Layout.astro';
+import AuthForm from '../../../components/auth/AuthForm.astro';
+import { getLocaleFromUrl, loadTranslations, t } from '../../../utils/i18n';
+import type { Locale } from '../../../types/i18n';
+
+const locale = getLocaleFromUrl(Astro.url) as Locale;
+const translations = await loadTranslations(locale);
+
+const title = t(translations, 'auth.login');
+const description = 'Connectez-vous à votre compte pour accéder à toutes les fonctionnalités de la plateforme.';
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale}
+>
+  <AuthForm 
+    locale={locale}
+    type="login"
+    title={title}
+    submitText={t(translations, 'auth.login')}
+    redirectTo={Astro.url.searchParams.get('redirectTo') || `/${locale}/`}
+  />
+</Layout>

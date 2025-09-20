@@ -1,0 +1,733 @@
+---
+// Profile Page
+import Layout from '../../layouts/Layout.astro';
+import { getLocaleFromUrl, loadTranslations, t } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+const locale = getLocaleFromUrl(Astro.url) as Locale;
+const translations = await loadTranslations(locale);
+
+const title = t(translations, 'nav.profile');
+const description = 'Gérez votre profil, vos préférences et vos informations personnelles.';
+
+// This would normally come from authentication context
+const currentUser = {
+  id: '1',
+  firstName: 'Jean',
+  lastName: 'Dupont',
+  email: 'jean.dupont@example.com',
+  avatar: '/images/avatars/default.jpg',
+  bio: 'Développeur passionné par les nouvelles technologies.',
+  role: 'USER',
+  emailVerified: true,
+  memberSince: new Date('2023-06-15'),
+  lastLogin: new Date('2024-01-15'),
+};
+
+// User stats
+const userStats = {
+  postsCreated: 5,
+  commentsPosted: 23,
+  likesReceived: 142,
+  profileViews: 89
+};
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale}
+>
+  <main class="profile-page">
+    <div class="container">
+      <!-- Profile Header -->
+      <section class="profile-header">
+        <div class="profile-info">
+          <div class="avatar-section">
+            <img 
+              src={currentUser.avatar} 
+              alt={`${currentUser.firstName} ${currentUser.lastName}`}
+              class="profile-avatar"
+            />
+            <button class="avatar-upload-btn" type="button">
+              📷 Changer la photo
+            </button>
+          </div>
+          
+          <div class="user-details">
+            <h1 class="user-name">
+              {currentUser.firstName} {currentUser.lastName}
+              {currentUser.emailVerified && (
+                <span class="verified-badge" title="Email vérifié">✓</span>
+              )}
+            </h1>
+            <p class="user-email">{currentUser.email}</p>
+            <p class="user-bio">{currentUser.bio}</p>
+            
+            <div class="user-meta">
+              <span class="meta-item">
+                📅 Membre depuis {currentUser.memberSince.toLocaleDateString('fr-FR')}
+              </span>
+              <span class="meta-item">
+                🕒 Dernière connexion {currentUser.lastLogin.toLocaleDateString('fr-FR')}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- User Stats -->
+        <div class="user-stats">
+          <div class="stat-item">
+            <span class="stat-value">{userStats.postsCreated}</span>
+            <span class="stat-label">Articles</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{userStats.commentsPosted}</span>
+            <span class="stat-label">Commentaires</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{userStats.likesReceived}</span>
+            <span class="stat-label">Likes reçus</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{userStats.profileViews}</span>
+            <span class="stat-label">Vues profil</span>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Profile Tabs -->
+      <section class="profile-content">
+        <div class="tab-navigation">
+          <button class="tab-btn active" data-tab="personal">
+            👤 Informations personnelles
+          </button>
+          <button class="tab-btn" data-tab="security">
+            🔒 Sécurité
+          </button>
+          <button class="tab-btn" data-tab="preferences">
+            ⚙️ Préférences
+          </button>
+          <button class="tab-btn" data-tab="activity">
+            📊 Activité
+          </button>
+        </div>
+        
+        <!-- Personal Information Tab -->
+        <div class="tab-content active" data-tab-content="personal">
+          <div class="content-card">
+            <h2 class="card-title">Informations personnelles</h2>
+            
+            <form class="profile-form" id="personalForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="firstName" class="form-label">Prénom</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    class="input"
+                    value={currentUser.firstName}
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="lastName" class="form-label">Nom</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    class="input"
+                    value={currentUser.lastName}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="input"
+                  value={currentUser.email}
+                  required
+                />
+              </div>
+              
+              <div class="form-group">
+                <label for="bio" class="form-label">Biographie</label>
+                <textarea
+                  id="bio"
+                  name="bio"
+                  rows="4"
+                  class="textarea"
+                  placeholder="Parlez-nous de vous..."
+                >{currentUser.bio}</textarea>
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  Enregistrer les modifications
+                </button>
+                <button type="button" class="btn btn-ghost">
+                  Annuler
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Security Tab -->
+        <div class="tab-content" data-tab-content="security">
+          <div class="content-card">
+            <h2 class="card-title">Sécurité</h2>
+            
+            <form class="profile-form" id="securityForm">
+              <div class="form-group">
+                <label for="currentPassword" class="form-label">Mot de passe actuel</label>
+                <input
+                  type="password"
+                  id="currentPassword"
+                  name="currentPassword"
+                  class="input"
+                  required
+                />
+              </div>
+              
+              <div class="form-group">
+                <label for="newPassword" class="form-label">Nouveau mot de passe</label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  class="input"
+                  required
+                />
+              </div>
+              
+              <div class="form-group">
+                <label for="confirmPassword" class="form-label">Confirmer le nouveau mot de passe</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  class="input"
+                  required
+                />
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  Changer le mot de passe
+                </button>
+              </div>
+            </form>
+            
+            <div class="security-section">
+              <h3>Sessions actives</h3>
+              <div class="session-list">
+                <div class="session-item">
+                  <div class="session-info">
+                    <strong>Session actuelle</strong>
+                    <span>Chrome sur Windows - 192.168.1.100</span>
+                    <span class="session-time">Maintenant</span>
+                  </div>
+                  <span class="session-status current">Actuelle</span>
+                </div>
+                <div class="session-item">
+                  <div class="session-info">
+                    <strong>Session mobile</strong>
+                    <span>Safari sur iOS - Mobile</span>
+                    <span class="session-time">Il y a 2 heures</span>
+                  </div>
+                  <button class="btn btn-ghost btn-sm">Déconnecter</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Preferences Tab -->
+        <div class="tab-content" data-tab-content="preferences">
+          <div class="content-card">
+            <h2 class="card-title">Préférences</h2>
+            
+            <form class="profile-form" id="preferencesForm">
+              <div class="form-group">
+                <label class="form-label">Langue</label>
+                <select class="select" name="language">
+                  <option value="fr" selected>Français</option>
+                  <option value="en">English</option>
+                  <option value="de">Deutsch</option>
+                  <option value="es">Español</option>
+                  <option value="ar">العربية</option>
+                  <option value="zh">中文</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Thème</label>
+                <div class="theme-options">
+                  <label class="radio-label">
+                    <input type="radio" name="theme" value="light" checked />
+                    <span>🌞 Clair</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="theme" value="dark" />
+                    <span>🌙 Sombre</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="theme" value="auto" />
+                    <span>🔄 Automatique</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Notifications</label>
+                <div class="notification-options">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="emailNotifications" checked />
+                    <span>Notifications par email</span>
+                  </label>
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="commentNotifications" checked />
+                    <span>Nouveaux commentaires</span>
+                  </label>
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="newsletterNotifications" checked />
+                    <span>Newsletter</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  Enregistrer les préférences
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Activity Tab -->
+        <div class="tab-content" data-tab-content="activity">
+          <div class="content-card">
+            <h2 class="card-title">Activité récente</h2>
+            
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-icon">💬</div>
+                <div class="activity-content">
+                  <p><strong>Commentaire publié</strong></p>
+                  <p>Sur l'article "Introduction à Astro 5.0"</p>
+                  <span class="activity-time">Il y a 2 heures</span>
+                </div>
+              </div>
+              
+              <div class="activity-item">
+                <div class="activity-icon">❤️</div>
+                <div class="activity-content">
+                  <p><strong>Article liké</strong></p>
+                  <p>"TypeScript : Bonnes pratiques pour 2024"</p>
+                  <span class="activity-time">Il y a 1 jour</span>
+                </div>
+              </div>
+              
+              <div class="activity-item">
+                <div class="activity-icon">👤</div>
+                <div class="activity-content">
+                  <p><strong>Profil mis à jour</strong></p>
+                  <p>Biographie modifiée</p>
+                  <span class="activity-time">Il y a 3 jours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .profile-page {
+    padding: var(--space-8) 0;
+  }
+  
+  .profile-header {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    margin-bottom: var(--space-8);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-8);
+  }
+  
+  .profile-info {
+    display: flex;
+    gap: var(--space-6);
+    flex: 1;
+  }
+  
+  .avatar-section {
+    text-align: center;
+  }
+  
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--border-primary);
+    margin-bottom: var(--space-3);
+  }
+  
+  .avatar-upload-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-base);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: var(--transition-all);
+  }
+  
+  .avatar-upload-btn:hover {
+    background: var(--bg-tertiary);
+  }
+  
+  .user-details {
+    flex: 1;
+  }
+  
+  .user-name {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  
+  .verified-badge {
+    background: var(--color-success-500);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+  }
+  
+  .user-email {
+    color: var(--text-secondary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-3);
+  }
+  
+  .user-bio {
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-4);
+  }
+  
+  .user-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  
+  .meta-item {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+  
+  .user-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  
+  .stat-item {
+    text-align: center;
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-base);
+  }
+  
+  .stat-value {
+    display: block;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+  }
+  
+  .stat-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-top: var(--space-1);
+  }
+  
+  .tab-navigation {
+    display: flex;
+    gap: var(--space-1);
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border-primary);
+  }
+  
+  .tab-btn {
+    padding: var(--space-3) var(--space-4);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-all);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .tab-btn:hover,
+  .tab-btn.active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+  
+  .tab-content {
+    display: none;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  .content-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+  
+  .card-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-6);
+  }
+  
+  .profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .form-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  
+  .theme-options,
+  .notification-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .radio-label,
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+  }
+  
+  .security-section {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-primary);
+  }
+  
+  .security-section h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--space-4);
+  }
+  
+  .session-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .session-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-base);
+  }
+  
+  .session-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  
+  .session-info strong {
+    color: var(--text-primary);
+  }
+  
+  .session-info span {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .session-status.current {
+    background: var(--color-success-500);
+    color: white;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .activity-item {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-base);
+  }
+  
+  .activity-icon {
+    font-size: var(--font-size-xl);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-surface);
+    border-radius: var(--radius-base);
+    flex-shrink: 0;
+  }
+  
+  .activity-content {
+    flex: 1;
+  }
+  
+  .activity-content p {
+    margin: 0 0 var(--space-1) 0;
+    color: var(--text-secondary);
+  }
+  
+  .activity-content strong {
+    color: var(--text-primary);
+  }
+  
+  .activity-time {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+  }
+  
+  @media (max-width: 768px) {
+    .profile-header {
+      flex-direction: column;
+    }
+    
+    .profile-info {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .user-stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .tab-navigation {
+      flex-wrap: wrap;
+    }
+    
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  // Tab functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetTab = button.getAttribute('data-tab');
+        
+        // Remove active class from all tabs
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Add active class to clicked tab and corresponding content
+        button.classList.add('active');
+        const targetContent = document.querySelector(`[data-tab-content="${targetTab}"]`);
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+      });
+    });
+    
+    // Form submissions
+    const forms = document.querySelectorAll('.profile-form');
+    forms.forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(form as HTMLFormElement);
+        const data = Object.fromEntries(formData.entries());
+        
+        console.log('Form submission:', data);
+        
+        // Here you would send the data to your API
+        alert('Modifications sauvegardées avec succès !');
+      });
+    });
+  });
+</script>

@@ -1,8 +1,12 @@
 import { defineConfig } from 'astro/config';
+import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
+  output: 'server',
+  adapter: node({
+    mode: 'standalone'
+  }),
   integrations: [],
   i18n: {
     defaultLocale: 'fr',
@@ -19,5 +23,10 @@ export default defineConfig({
   },
   compilerOptions: {
     strict: true
+  },
+  vite: {
+    define: {
+      __DB_PREFIX__: JSON.stringify(process.env.DB_PREFIX || 'astro_')
+    }
   }
 });
