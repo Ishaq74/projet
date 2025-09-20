@@ -1,0 +1,115 @@
+---
+// Articles page - Magazine articles about Annecy
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+export async function getStaticPaths() {
+  return locales.map((localeConfig) => ({
+    params: { locale: localeConfig.code },
+  }));
+}
+
+const { locale } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+const title = `${t(translations, 'nav.articles')} - Salut Annecy`;
+const description = "Découvrez nos articles de magazine sur Annecy : guides, actualités, culture et lifestyle du bassin annécien.";
+---
+
+<Layout title={title} description={description} locale={locale}>
+  <Navigation locale={locale} currentPath="/articles" />
+  
+  <main class="page-container">
+    <section class="hero-section">
+      <div class="container">
+        <h1>{t(translations, 'nav.articles')}</h1>
+        <p>Découvrez nos articles de magazine sur Annecy : guides, actualités, culture et lifestyle du bassin annécien.</p>
+      </div>
+    </section>
+    
+    <section class="content-section">
+      <div class="container">
+        <div class="redirect-notice">
+          <h2>Articles et Blog</h2>
+          <p>Retrouvez tous nos articles sur notre blog. Nous vous redirigeons...</p>
+          <a href={`/${locale}/blog`} class="btn btn-primary btn-lg">
+            Accéder au Blog
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  // Auto-redirect to blog after 3 seconds
+  setTimeout(() => {
+    const locale = window.location.pathname.split('/')[1];
+    window.location.href = `/${locale}/blog`;
+  }, 3000);
+</script>
+
+<style>
+  .page-container {
+    min-height: 100vh;
+  }
+  
+  .hero-section {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+  
+  .hero-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .content-section {
+    padding: 4rem 0;
+  }
+  
+  .redirect-notice {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f8f9fa;
+    border-radius: 1rem;
+  }
+  
+  .redirect-notice h2 {
+    font-size: 2rem;
+    color: #495057;
+    margin-bottom: 1rem;
+  }
+  
+  .redirect-notice p {
+    color: #6c757d;
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: #7c3aed;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .btn:hover {
+    background: #5b21b6;
+    transform: translateY(-1px);
+  }
+  
+  .btn-lg {
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+  }
+</style>

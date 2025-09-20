@@ -1,0 +1,347 @@
+---
+// Annonces page - Classified ads homepage
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+export async function getStaticPaths() {
+  return locales.map((localeConfig) => ({
+    params: { locale: localeConfig.code },
+  }));
+}
+
+const { locale } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+const title = `${t(translations, 'nav.annonces')} - Salut Annecy`;
+const description = "Petites annonces entre particuliers à Annecy : emploi, immobilier, vente et services.";
+
+const categories = [
+  {
+    name: t(translations, 'nav.emploi'),
+    href: `/annonces/emploi`,
+    icon: '💼',
+    description: 'Offres d\'emploi et opportunités de carrière',
+    count: 45
+  },
+  {
+    name: t(translations, 'nav.immobilier'),
+    href: `/annonces/immobilier`,
+    icon: '🏠',
+    description: 'Locations, ventes et colocations',
+    count: 78
+  },
+  {
+    name: t(translations, 'nav.vente'),
+    href: `/annonces/vente`,
+    icon: '🛍️',
+    description: 'Achats et ventes entre particuliers',
+    count: 156
+  },
+  {
+    name: t(translations, 'nav.services_particuliers'),
+    href: `/annonces/services`,
+    icon: '🔧',
+    description: 'Services entre particuliers',
+    count: 89
+  }
+];
+---
+
+<Layout title={title} description={description} locale={locale}>
+  <Navigation locale={locale} currentPath="/annonces" />
+  
+  <main class="annonces-page">
+    <section class="hero-section">
+      <div class="container">
+        <h1>{t(translations, 'nav.annonces')}</h1>
+        <p>Petites annonces entre particuliers à Annecy : emploi, immobilier, vente et services.</p>
+        <div class="hero-actions">
+          <a href={`/${locale}/annonces/deposer`} class="btn btn-primary btn-lg">
+            Déposer une annonce
+          </a>
+          <a href={`/${locale}/annonces/rechercher`} class="btn btn-ghost btn-lg">
+            Rechercher
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories-section">
+      <div class="container">
+        <h2>Catégories d'annonces</h2>
+        <div class="categories-grid">
+          {categories.map((category) => (
+            <a href={`/${locale}${category.href}`} class="category-card">
+              <div class="category-icon">{category.icon}</div>
+              <h3 class="category-name">{category.name}</h3>
+              <p class="category-description">{category.description}</p>
+              <div class="category-count">{category.count} annonces</div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="recent-section">
+      <div class="container">
+        <h2>Annonces récentes</h2>
+        <div class="recent-ads">
+          <div class="ad-card">
+            <div class="ad-image">📷</div>
+            <div class="ad-content">
+              <h4>Appartement T2 centre-ville</h4>
+              <p class="ad-price">850€/mois</p>
+              <p class="ad-location">Annecy centre</p>
+              <span class="ad-category">Immobilier</span>
+            </div>
+          </div>
+          <div class="ad-card">
+            <div class="ad-image">📷</div>
+            <div class="ad-content">
+              <h4>Développeur Web React</h4>
+              <p class="ad-price">CDI</p>
+              <p class="ad-location">Annecy</p>
+              <span class="ad-category">Emploi</span>
+            </div>
+          </div>
+          <div class="ad-card">
+            <div class="ad-image">📷</div>
+            <div class="ad-content">
+              <h4>Vélo de ville électrique</h4>
+              <p class="ad-price">450€</p>
+              <p class="ad-location">Seynod</p>
+              <span class="ad-category">Vente</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <a href={`/${locale}/annonces/toutes`} class="btn btn-ghost">
+            Voir toutes les annonces
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .annonces-page {
+    min-height: 100vh;
+  }
+
+  .hero-section {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .hero-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .hero-section p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid white;
+  }
+
+  .btn-primary:hover {
+    background: white;
+    color: #f59e0b;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+  }
+
+  .btn-lg {
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+  }
+
+  .categories-section,
+  .recent-section {
+    padding: 4rem 0;
+  }
+
+  .categories-section h2,
+  .recent-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: #1f2937;
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .category-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+  }
+
+  .category-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .category-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+
+  .category-description {
+    color: #6b7280;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .category-count {
+    font-weight: 600;
+    color: #f59e0b;
+  }
+
+  .recent-section {
+    background: #f9fafb;
+  }
+
+  .recent-ads {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .ad-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 1rem;
+  }
+
+  .ad-image {
+    width: 80px;
+    height: 80px;
+    background: #f3f4f6;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .ad-content {
+    flex: 1;
+  }
+
+  .ad-content h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+  }
+
+  .ad-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-bottom: 0.25rem;
+  }
+
+  .ad-location {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .ad-category {
+    background: #e5e7eb;
+    color: #374151;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .hero-section h1 {
+      font-size: 2rem;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .btn {
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .categories-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .recent-ads {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

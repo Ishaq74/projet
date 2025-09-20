@@ -1,0 +1,82 @@
+---
+// Sentiers page - Hiking trails around Annecy
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+export async function getStaticPaths() {
+  return locales.map((localeConfig) => ({
+    params: { locale: localeConfig.code },
+  }));
+}
+
+const { locale } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+const title = `${t(translations, 'nav.sentiers')} - Salut Annecy`;
+const description = "Découvrez tous les sentiers de randonnée autour d'Annecy : parcours faciles, modérés et difficiles avec vues panoramiques.";
+---
+
+<Layout title={title} description={description} locale={locale}>
+  <Navigation locale={locale} currentPath="/sentiers" />
+  
+  <main class="page-container">
+    <section class="hero-section">
+      <div class="container">
+        <h1>{t(translations, 'nav.sentiers')}</h1>
+        <p>Découvrez tous les sentiers de randonnée autour d'Annecy : parcours faciles, modérés et difficiles avec vues panoramiques.</p>
+      </div>
+    </section>
+    
+    <section class="content-section">
+      <div class="container">
+        <div class="coming-soon">
+          <h2>Page en construction</h2>
+          <p>Cette section sera bientôt disponible avec tous les sentiers de randonnée autour d'Annecy.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .page-container {
+    min-height: 100vh;
+  }
+  
+  .hero-section {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+  
+  .hero-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .content-section {
+    padding: 4rem 0;
+  }
+  
+  .coming-soon {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f8f9fa;
+    border-radius: 1rem;
+  }
+  
+  .coming-soon h2 {
+    font-size: 2rem;
+    color: #495057;
+    margin-bottom: 1rem;
+  }
+  
+  .coming-soon p {
+    color: #6c757d;
+    font-size: 1.125rem;
+  }
+</style>
