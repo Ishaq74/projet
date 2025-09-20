@@ -91,9 +91,7 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
     </script>
     
     <!-- Global Styles -->
-    <style>
-      @import '/src/styles/global.css';
-    </style>
+    <link rel="stylesheet" href="/src/styles/global.css" />
   </head>
   
   <body>
@@ -126,12 +124,10 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
     
     <!-- Theme and Locale Management Scripts -->
     <script>
-      import { themeActions } from '/src/stores/theme.ts';
-      import { localeActions } from '/src/stores/locale.ts';
-      
-      // Initialize stores
-      themeActions.initTheme();
-      localeActions.initLocale();
+      // Initialize theme on page load
+      const savedTheme = localStorage.getItem('theme');
+      const theme = savedTheme ? JSON.parse(savedTheme) : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
     </script>
   </body>
 </html>
