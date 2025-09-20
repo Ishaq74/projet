@@ -1,8 +1,18 @@
 ---
-// Home Page - Dynamic route for all locales
+// ULTIMATE HOMEPAGE - PERFECT INTEGRATION OF DESIGN SYSTEM
 import Layout from '../../layouts/Layout.astro';
-import Navigation from '../../components/Navigation.astro';
-import { getLocaleFromUrl, loadTranslations, t, locales } from '../../utils/i18n';
+import Navbar from '../../components/organisms/navbar.astro';
+import Hero from '../../components/organisms/hero.astro';
+import Container from '../../components/atoms/container.astro';
+import Heading from '../../components/atoms/heading.astro';
+import Paragraph from '../../components/atoms/paragraph.astro';
+import Button from '../../components/atoms/button.astro';
+import Card from '../../components/molecules/card.astro';
+import Icon from '../../components/atoms/icon.astro';
+import Badge from '../../components/atoms/badge.astro';
+import Avatar from '../../components/atoms/avatar.astro';
+import Chip from '../../components/atoms/chip.astro';
+import { loadTranslations, t, locales } from '../../utils/i18n';
 import type { Locale } from '../../types/i18n';
 
 export async function getStaticPaths() {
@@ -11,19 +21,16 @@ export async function getStaticPaths() {
   }));
 }
 
-// Get locale from URL
 const { locale } = Astro.params;
 const translations = await loadTranslations(locale as Locale);
 
-// SEO data
 const title = t(translations, 'seo.home.title');
 const description = t(translations, 'seo.home.description');
 
-// Structured data for home page
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Plateforme Web Ultra-Complète",
+  "name": "Salut Annecy - Plateforme Communautaire Ultime",
   "description": description,
   "url": Astro.site?.toString(),
   "inLanguage": locale,
@@ -33,6 +40,56 @@ const jsonLd = {
     "query-input": "required name=search_term_string"
   }
 };
+
+// Features data with comprehensive information
+const features = [
+  {
+    icon: 'location',
+    title: 'Découverte Locale',
+    description: 'Restaurants, hébergements, activités et événements du bassin annécien avec avis détaillés.',
+    color: 'primary',
+    stats: { count: '2500+', label: 'Lieux référencés' }
+  },
+  {
+    icon: 'users',
+    title: 'Communauté Active',
+    description: 'Forums et groupes pour échanger avec habitants et visiteurs de la région.',
+    color: 'secondary',
+    stats: { count: '15k+', label: 'Membres actifs' }
+  },
+  {
+    icon: 'briefcase',
+    title: 'Petites Annonces',
+    description: 'Emploi, immobilier, vente entre particuliers dans la région d\'Annecy.',
+    color: 'accent',
+    stats: { count: '800+', label: 'Annonces actives' }
+  },
+  {
+    icon: 'map',
+    title: 'Sentiers & Nature',
+    description: 'Randonnées, sentiers et espaces naturels autour du magnifique lac d\'Annecy.',
+    color: 'success',
+    stats: { count: '150+', label: 'Itinéraires' }
+  }
+];
+
+// Popular categories
+const categories = [
+  { name: 'Restaurants', count: 450, color: 'primary' },
+  { name: 'Hébergements', count: 280, color: 'secondary' },
+  { name: 'Activités', count: 320, color: 'accent' },
+  { name: 'Événements', count: 120, color: 'success' },
+  { name: 'Sentiers', count: 150, color: 'warning' },
+  { name: 'Services', count: 200, color: 'info' }
+];
+
+// Community stats
+const communityStats = [
+  { label: 'Membres', value: '15,247', icon: 'users' },
+  { label: 'Avis', value: '8,950', icon: 'star' },
+  { label: 'Photos', value: '12,300', icon: 'image' },
+  { label: 'Messages', value: '45,600', icon: 'message-circle' }
+];
 ---
 
 <Layout 
@@ -41,426 +98,562 @@ const jsonLd = {
   locale={locale as Locale}
   jsonLd={jsonLd}
 >
-  <Navigation slot="header" locale={locale as Locale} currentPath="/" />
+  <Navbar slot="header" locale={locale as Locale} currentPath="/" />
   
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          {t(translations, 'seo.home.title')}
-        </h1>
-        <p class="hero-description">
-          {t(translations, 'seo.home.description')}
-        </p>
-        <div class="hero-actions">
-          <a href={`/${locale}/restaurants`} class="btn btn-primary btn-lg">
-            {t(translations, 'nav.restaurants')}
-          </a>
-          <a href={`/${locale}/evenements`} class="btn btn-secondary btn-lg">
-            {t(translations, 'nav.evenements')}
-          </a>
-        </div>
-      </div>
-      <div class="hero-image">
-        <img 
-          src="/images/hero-illustration.svg" 
-          alt="Platform illustration"
-          width="600"
-          height="400"
-          loading="eager"
-        />
+  <!-- ULTIMATE HERO SECTION -->
+  <Hero
+    title="Salut Annecy"
+    subtitle="Bienvenue dans"
+    description="La plateforme communautaire ultime du bassin annécien. Découvrez, partagez et vivez Annecy comme un local !"
+    variant="gradient"
+    size="xl"
+    ctaPrimary={{
+      text: "Explorer Annecy",
+      href: `/${locale}/discover`
+    }}
+    ctaSecondary={{
+      text: "Rejoindre la communauté",
+      href: `/${locale}/register`
+    }}
+  >
+    <!-- Hero Stats -->
+    <div class="hero-stats">
+      <div class="hero-stats__grid">
+        {communityStats.map(stat => (
+          <div class="hero-stats__item">
+            <Icon name={stat.icon} size="md" color="primary" />
+            <div class="hero-stats__content">
+              <div class="hero-stats__value">{stat.value}</div>
+              <div class="hero-stats__label">{stat.label}</div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
-  </section>
-  
-  <!-- Features Section -->
-  <section class="features">
-    <div class="container">
-      <h2 class="section-title">Découvrez Annecy</h2>
+  </Hero>
+
+  <!-- FEATURES SECTION WITH PERFECT CARDS -->
+  <section class="features-section">
+    <Container size="xl" padding="xl">
+      <div class="section-header">
+        <Heading level={2} size="4xl" align="center" color="primary">
+          Tout Annecy dans votre poche
+        </Heading>
+        <Paragraph size="xl" color="secondary" align="center" spacing="relaxed">
+          Une plateforme complète pour découvrir, vivre et partager l'expérience annécienne
+        </Paragraph>
+      </div>
+
       <div class="features-grid">
-        <div class="feature-card card">
-          <div class="card-body">
-            <div class="feature-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3"/>
-              </svg>
+        {features.map(feature => (
+          <Card variant="elevated" padding="lg" hoverable class="feature-card">
+            <div class="feature-header">
+              <div class="feature-icon">
+                <Icon name={feature.icon} size="xl" color="primary" />
+              </div>
+              <Badge variant="soft" color="primary" size="sm">
+                {feature.stats.label}
+              </Badge>
             </div>
-            <h3 class="feature-title">Découverte Locale</h3>
-            <p class="feature-description">
-              Explorez restaurants, hébergements, activités et événements du bassin annécien.
-            </p>
-          </div>
-        </div>
-        
-        <div class="feature-card card">
-          <div class="card-body">
-            <div class="feature-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 6v6l4 2"/>
-              </svg>
+            
+            <div class="feature-content">
+              <Heading level={3} size="xl" color="primary">
+                {feature.title}
+              </Heading>
+              <Paragraph color="secondary" spacing="relaxed">
+                {feature.description}
+              </Paragraph>
+              
+              <div class="feature-stats">
+                <span class="feature-stats__number">{feature.stats.count}</span>
+                <span class="feature-stats__label">{feature.stats.label}</span>
+              </div>
             </div>
-            <h3 class="feature-title">Multilingual Support</h3>
-            <p class="feature-description">
-              Complete internationalization with support for 6 languages and localized content.
-            </p>
-          </div>
-        </div>
-        
-        <div class="feature-card card">
-          <div class="card-body">
-            <div class="feature-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" y1="19" x2="12" y2="23"/>
-                <line x1="8" y1="23" x2="16" y2="23"/>
-              </svg>
+            
+            <div class="feature-action">
+              <Button 
+                variant="secondary" 
+                size="sm"
+                href={`/${locale}/explore/${feature.title.toLowerCase()}`}
+              >
+                Explorer
+              </Button>
             </div>
-            <h3 class="feature-title">Accessible Design</h3>
-            <p class="feature-description">
-              Fully accessible with ARIA support, keyboard navigation, and screen reader compatibility.
-            </p>
-          </div>
-        </div>
-        
-        <div class="feature-card card">
-          <div class="card-body">
-            <div class="feature-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="9" cy="9" r="2"/>
-                <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-              </svg>
-            </div>
-            <h3 class="feature-title">Modern Design System</h3>
-            <p class="feature-description">
-              Comprehensive design system with multiple themes and native CSS components.
-            </p>
-          </div>
-        </div>
+          </Card>
+        ))}
       </div>
-    </div>
+    </Container>
   </section>
-  
-  <!-- CTA Section -->
-  <section class="cta">
-    <div class="container">
+
+  <!-- CATEGORIES SECTION -->
+  <section class="categories-section">
+    <Container size="xl" padding="xl">
+      <div class="section-header">
+        <Heading level={2} size="3xl" align="center" color="primary">
+          Catégories populaires
+        </Heading>
+        <Paragraph size="lg" color="secondary" align="center">
+          Explorez par centres d'intérêt
+        </Paragraph>
+      </div>
+
+      <div class="categories-grid">
+        {categories.map(category => (
+          <Chip
+            variant="soft"
+            color="primary"
+            size="lg"
+            clickable
+            href={`/${locale}/category/${category.name.toLowerCase()}`}
+            class="category-chip"
+          >
+            <span slot="icon">
+              <Badge variant="solid" color="primary" size="sm">
+                {category.count}
+              </Badge>
+            </span>
+            {category.name}
+          </Chip>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <!-- COMMUNITY SECTION -->
+  <section class="community-section">
+    <Container size="xl" padding="xl">
+      <Card variant="elevated" padding="lg" class="community-card">
+        <div class="community-content">
+          <div class="community-text">
+            <Heading level={2} size="3xl" color="primary">
+              Rejoignez 15 000+ Annéciens
+            </Heading>
+            <Paragraph size="lg" color="secondary" spacing="relaxed">
+              Une communauté passionnée qui partage ses bons plans, organise des événements 
+              et vous aide à vivre Annecy pleinement. Membres vérifiés, modération active.
+            </Paragraph>
+            
+            <div class="community-features">
+              <div class="community-features__list">
+                <div class="community-feature">
+                  <Icon name="check" size="sm" color="success" />
+                  <span>Conseils d'habitants authentiques</span>
+                </div>
+                <div class="community-feature">
+                  <Icon name="check" size="sm" color="success" />
+                  <span>Événements exclusifs communauté</span>
+                </div>
+                <div class="community-feature">
+                  <Icon name="check" size="sm" color="success" />
+                  <span>Support réactif et bienveillant</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="community-actions">
+              <Button variant="primary" size="lg" href={`/${locale}/register`}>
+                Rejoindre gratuitement
+              </Button>
+              <Button variant="secondary" size="lg" href={`/${locale}/community`}>
+                Découvrir la communauté
+              </Button>
+            </div>
+          </div>
+
+          <div class="community-avatars">
+            <div class="avatars-stack">
+              <Avatar 
+                variant="circular" 
+                size="lg" 
+                name="Marie Dubois"
+                status="online"
+              />
+              <Avatar 
+                variant="circular" 
+                size="lg" 
+                name="Jean Martin"
+                status="away"
+              />
+              <Avatar 
+                variant="circular" 
+                size="lg" 
+                name="Sophie Laurent"
+                status="online"
+              />
+              <Avatar 
+                variant="circular" 
+                size="lg" 
+                name="Pierre Durand"
+                status="online"
+              />
+              <div class="avatars-more">
+                <span>+15k</span>
+              </div>
+            </div>
+            
+            <div class="community-testimonial">
+              <blockquote>
+                "Grâce à Salut Annecy, j'ai découvert des endroits magnifiques 
+                que je n'aurais jamais trouvés seule !"
+              </blockquote>
+              <cite>— Marie, membre depuis 2 ans</cite>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </Container>
+  </section>
+
+  <!-- CALL TO ACTION FINAL -->
+  <section class="final-cta">
+    <Container size="lg" padding="xl">
       <div class="cta-content">
-        <h2 class="cta-title">Ready to Get Started?</h2>
-        <p class="cta-description">
-          Explore our platform and discover how we can help you build amazing digital experiences.
-        </p>
+        <Heading level={2} size="4xl" align="center" color="inverse">
+          Prêt à découvrir le vrai Annecy ?
+        </Heading>
+        <Paragraph size="xl" color="inverse" align="center" spacing="relaxed">
+          Rejoignez la plus grande communauté du bassin annécien
+        </Paragraph>
+        
         <div class="cta-actions">
-          <a href={`/${locale}/contact`} class="btn btn-primary btn-lg">
-            {t(translations, 'nav.contact')}
-          </a>
-          <a href={`/${locale}/services`} class="btn btn-ghost btn-lg">
-            {t(translations, 'nav.services')}
-          </a>
+          <Button variant="primary" size="lg" href={`/${locale}/register`}>
+            Commencer l'aventure
+          </Button>
+          <Button variant="ghost" size="lg" href={`/${locale}/explore`}>
+            Explorer sans compte
+          </Button>
+        </div>
+
+        <div class="cta-guarantee">
+          <Paragraph size="sm" color="inverse" align="center">
+            ✨ Gratuit • Sans pub • Respectueux de votre vie privée
+          </Paragraph>
         </div>
       </div>
-    </div>
+    </Container>
   </section>
-  
-  <!-- Footer -->
-  <footer slot="footer" class="footer-content">
-    <div class="footer-grid">
-      <div class="footer-section">
-        <h3 class="footer-title">Platform</h3>
-        <p class="footer-description">
-          Ultra-complete web platform built with modern technologies and best practices.
-        </p>
-      </div>
-      
-      <div class="footer-section">
-        <h4 class="footer-heading">Navigation</h4>
-        <ul class="footer-links">
-          <li><a href={`/${locale}/`}>{t(translations, 'nav.home')}</a></li>
-          <li><a href={`/${locale}/about`}>{t(translations, 'nav.about')}</a></li>
-          <li><a href={`/${locale}/services`}>{t(translations, 'nav.services')}</a></li>
-          <li><a href={`/${locale}/training`}>{t(translations, 'nav.training')}</a></li>
-        </ul>
-      </div>
-      
-      <div class="footer-section">
-        <h4 class="footer-heading">Resources</h4>
-        <ul class="footer-links">
-          <li><a href={`/${locale}/blog`}>{t(translations, 'nav.blog')}</a></li>
-          <li><a href={`/${locale}/contact`}>{t(translations, 'nav.contact')}</a></li>
-          <li><a href={`/${locale}/legal`}>Legal</a></li>
-        </ul>
-      </div>
-      
-      <div class="footer-section">
-        <h4 class="footer-heading">Connect</h4>
-        <div class="social-links">
-          <a href="#" class="social-link" aria-label="Twitter">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-          </a>
-          <a href="#" class="social-link" aria-label="GitHub">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-    
-    <div class="footer-bottom">
-      <p>&copy; 2024 Platform. All rights reserved.</p>
-    </div>
-  </footer>
 </Layout>
 
 <style>
-  /* Hero Section */
-  .hero {
-    padding: var(--space-20) 0;
-    background: linear-gradient(
-      135deg,
-      var(--bg-primary) 0%,
-      var(--bg-secondary) 100%
-    );
-  }
-  
-  .hero .container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-16);
-    align-items: center;
-  }
-  
-  .hero-title {
-    font-size: var(--font-size-5xl);
-    font-weight: var(--font-weight-bold);
-    line-height: var(--line-height-tight);
-    margin-bottom: var(--space-6);
-    color: var(--text-primary);
-  }
-  
-  .hero-description {
-    font-size: var(--font-size-xl);
-    color: var(--text-secondary);
-    line-height: var(--line-height-relaxed);
-    margin-bottom: var(--space-8);
-  }
-  
-  .hero-actions {
-    display: flex;
-    gap: var(--space-4);
-    flex-wrap: wrap;
-  }
-  
-  .hero-image img {
+  /* ===== HERO STATS ===== */
+  .hero-stats {
+    margin-top: var(--space-12);
     width: 100%;
-    height: auto;
-    border-radius: var(--radius-lg);
   }
-  
-  /* Features Section */
-  .features {
-    padding: var(--space-24) 0;
-  }
-  
-  .section-title {
-    text-align: center;
-    margin-bottom: var(--space-16);
-    font-size: var(--font-size-4xl);
-  }
-  
-  .features-grid {
+
+  .hero-stats__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--space-8);
-  }
-  
-  .feature-card {
-    text-align: center;
-    transition: var(--transition-all);
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-  }
-  
-  .feature-icon {
-    display: flex;
-    justify-content: center;
-    margin-bottom: var(--space-6);
-    color: var(--color-accent);
-  }
-  
-  .feature-title {
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--space-4);
-  }
-  
-  .feature-description {
-    color: var(--text-secondary);
-    line-height: var(--line-height-relaxed);
-  }
-  
-  /* CTA Section */
-  .cta {
-    padding: var(--space-24) 0;
-    background-color: var(--bg-secondary);
-  }
-  
-  .cta-content {
-    text-align: center;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-6);
     max-width: 600px;
     margin: 0 auto;
   }
-  
-  .cta-title {
-    font-size: var(--font-size-4xl);
+
+  .hero-stats__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-stats__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-stats__value {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-inverse);
+    line-height: var(--line-height-tight);
+  }
+
+  .hero-stats__label {
+    font-size: var(--font-size-sm);
+    color: var(--text-inverse);
+    opacity: var(--opacity-80);
+  }
+
+  /* ===== FEATURES SECTION ===== */
+  .features-section {
+    padding: var(--space-24) 0;
+    background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-8);
+  }
+
+  .feature-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .feature-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: var(--space-6);
   }
-  
-  .cta-description {
-    font-size: var(--font-size-lg);
-    color: var(--text-secondary);
-    margin-bottom: var(--space-8);
-    line-height: var(--line-height-relaxed);
-  }
-  
-  .cta-actions {
-    display: flex;
-    gap: var(--space-4);
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  /* Footer */
-  .footer-content {
-    padding: var(--space-16) 0 var(--space-8);
-  }
-  
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: var(--space-12);
-    margin-bottom: var(--space-12);
-  }
-  
-  .footer-title {
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--space-4);
-  }
-  
-  .footer-description {
-    color: var(--text-secondary);
-    line-height: var(--line-height-relaxed);
-  }
-  
-  .footer-heading {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    margin-bottom: var(--space-4);
-  }
-  
-  .footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .footer-links li {
-    margin-bottom: var(--space-2);
-  }
-  
-  .footer-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: var(--transition-colors);
-  }
-  
-  .footer-links a:hover {
-    color: var(--text-primary);
-  }
-  
-  .social-links {
-    display: flex;
-    gap: var(--space-3);
-  }
-  
-  .social-link {
+
+  .feature-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: var(--size-16);
+    height: var(--size-16);
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100));
+  }
+
+  [data-theme="dark"] .feature-icon {
+    background: linear-gradient(135deg, var(--color-primary-900), var(--color-primary-800));
+  }
+
+  .feature-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .feature-stats {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin: var(--space-4) 0;
+  }
+
+  .feature-stats__number {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-600);
+  }
+
+  .feature-stats__label {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  .feature-action {
+    margin-top: auto;
+    padding-top: var(--space-4);
+  }
+
+  /* ===== CATEGORIES SECTION ===== */
+  .categories-section {
+    padding: var(--space-20) 0;
     background-color: var(--bg-tertiary);
-    color: var(--text-secondary);
-    border-radius: var(--radius-base);
-    text-decoration: none;
+  }
+
+  .categories-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .category-chip {
     transition: var(--transition-all);
   }
-  
-  .social-link:hover {
-    background-color: var(--color-accent);
+
+  .category-chip:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* ===== COMMUNITY SECTION ===== */
+  .community-section {
+    padding: var(--space-24) 0;
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500));
+  }
+
+  .community-card {
+    background: var(--bg-surface);
+    border: none;
+  }
+
+  .community-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-12);
+    align-items: center;
+  }
+
+  .community-features__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: var(--space-6) 0;
+  }
+
+  .community-feature {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+  }
+
+  .community-actions {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+  }
+
+  .avatars-stack {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-6);
+  }
+
+  .avatars-stack > * {
+    margin-left: calc(var(--space-3) * -1);
+    border: 3px solid var(--bg-surface);
+  }
+
+  .avatars-stack > *:first-child {
+    margin-left: 0;
+  }
+
+  .avatars-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-12);
+    height: var(--size-12);
+    background-color: var(--color-neutral-600);
+    color: var(--text-inverse);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    margin-left: calc(var(--space-3) * -1);
+    border: 3px solid var(--bg-surface);
+  }
+
+  .community-testimonial {
+    text-align: center;
+    padding: var(--space-6);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    border-left: var(--border-4) solid var(--color-primary-500);
+  }
+
+  .community-testimonial blockquote {
+    font-style: italic;
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .community-testimonial cite {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    font-style: normal;
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: var(--space-24) 0;
+    background: linear-gradient(135deg, var(--color-primary-600), var(--color-accent-600));
     color: var(--text-inverse);
   }
-  
-  .footer-bottom {
+
+  .cta-content {
     text-align: center;
-    padding-top: var(--space-8);
-    border-top: 1px solid var(--border-primary);
-    color: var(--text-tertiary);
-    font-size: var(--font-size-sm);
+    max-width: 800px;
+    margin: 0 auto;
   }
-  
-  /* Mobile Styles */
-  @media (max-width: 768px) {
-    .hero .container {
-      grid-template-columns: 1fr;
-      gap: var(--space-12);
-      text-align: center;
-    }
-    
-    .hero-title {
-      font-size: var(--font-size-3xl);
-    }
-    
-    .hero-description {
-      font-size: var(--font-size-lg);
-    }
-    
-    .hero-actions {
-      justify-content: center;
-    }
-    
-    .features {
-      padding: var(--space-16) 0;
-    }
-    
-    .features-grid {
-      grid-template-columns: 1fr;
-      gap: var(--space-6);
-    }
-    
-    .cta {
-      padding: var(--space-16) 0;
-    }
-    
-    .cta-title {
-      font-size: var(--font-size-3xl);
-    }
-    
-    .footer-grid {
+
+  .cta-actions {
+    display: flex;
+    gap: var(--space-6);
+    justify-content: center;
+    margin: var(--space-8) 0;
+  }
+
+  .cta-guarantee {
+    margin-top: var(--space-8);
+    opacity: var(--opacity-90);
+  }
+
+  /* ===== RESPONSIVE DESIGN ===== */
+  @media (max-width: 1024px) {
+    .community-content {
       grid-template-columns: 1fr;
       gap: var(--space-8);
       text-align: center;
     }
-    
-    .social-links {
+
+    .community-actions {
       justify-content: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-stats__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .categories-grid {
+      gap: var(--space-3);
+    }
+
+    .community-actions,
+    .cta-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .community-actions > *,
+    .cta-actions > * {
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .avatars-stack {
+      transform: scale(0.8);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-stats__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-stats__item {
+      justify-content: center;
+    }
+
+    .section-header h2 {
+      font-size: var(--font-size-3xl) !important;
     }
   }
 </style>
