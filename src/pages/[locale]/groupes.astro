@@ -1,0 +1,82 @@
+---
+// Groupes page - Community groups
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+export async function getStaticPaths() {
+  return locales.map((localeConfig) => ({
+    params: { locale: localeConfig.code },
+  }));
+}
+
+const { locale } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+const title = `${t(translations, 'nav.groupes')} - Salut Annecy`;
+const description = "Rejoignez les groupes thématiques de la communauté d'Annecy selon vos centres d'intérêt.";
+---
+
+<Layout title={title} description={description} locale={locale}>
+  <Navigation locale={locale} currentPath="/groupes" />
+  
+  <main class="page-container">
+    <section class="hero-section">
+      <div class="container">
+        <h1>{t(translations, 'nav.groupes')}</h1>
+        <p>Rejoignez les groupes thématiques de la communauté d'Annecy selon vos centres d'intérêt.</p>
+      </div>
+    </section>
+    
+    <section class="content-section">
+      <div class="container">
+        <div class="coming-soon">
+          <h2>Groupes communautaires</h2>
+          <p>Cette fonctionnalité sera bientôt disponible. Créez et rejoignez des groupes thématiques selon vos passions !</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .page-container {
+    min-height: 100vh;
+  }
+  
+  .hero-section {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+  
+  .hero-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .content-section {
+    padding: 4rem 0;
+  }
+  
+  .coming-soon {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f8f9fa;
+    border-radius: 1rem;
+  }
+  
+  .coming-soon h2 {
+    font-size: 2rem;
+    color: #495057;
+    margin-bottom: 1rem;
+  }
+  
+  .coming-soon p {
+    color: #6c757d;
+    font-size: 1.125rem;
+  }
+</style>

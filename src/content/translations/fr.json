@@ -9,7 +9,33 @@
     "profile": "Profil",
     "admin": "Administration",
     "login": "Connexion",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "discover": "Découvrir",
+    "restaurants": "Où Manger ?",
+    "hebergements": "Où Dormir ?",
+    "activites": "Quoi Faire ?",
+    "commerces": "Shopping & Services",
+    "evenements": "Agenda",
+    "sentiers": "Sentiers",
+    "articles": "Magazine",
+    "community": "Communauté",
+    "forums": "Forums",
+    "groupes": "Groupes",
+    "membres": "Membres",
+    "annonces": "Petites Annonces",
+    "emploi": "Emploi",
+    "immobilier": "Immobilier",
+    "vente": "Bonnes Affaires",
+    "services_particuliers": "Services entre particuliers",
+    "compte": "Mon Compte",
+    "dashboard": "Tableau de Bord",
+    "contributions": "Mes Contributions",
+    "favoris": "Mes Favoris",
+    "messagerie": "Ma Messagerie",
+    "mes_groupes": "Mes Groupes",
+    "mes_annonces": "Mes Annonces",
+    "parametres": "Paramètres",
+    "espace_pro": "Espace Professionnel"
   },
   "common": {
     "loading": "Chargement...",
@@ -56,8 +82,8 @@
   },
   "seo": {
     "home": {
-      "title": "Accueil - Plateforme Web Ultra-Complète",
-      "description": "Découvrez notre plateforme web moderne et complète avec Astro, TypeScript et design natif."
+      "title": "Salut Annecy - Plateforme communautaire du bassin annécien",
+      "description": "La plateforme numérique de référence pour tous les résidents, touristes et professionnels du bassin annécien. Découvrez les lieux, activités, événements et connectez-vous avec la communauté locale."
     },
     "about": {
       "title": "À propos - Notre Histoire",

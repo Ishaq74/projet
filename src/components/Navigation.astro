@@ -11,22 +11,56 @@ export interface Props {
 const { locale, currentPath } = Astro.props;
 const translations = await loadTranslations(locale);
 
-// Navigation items
+// Navigation items - Annecy community structure
 const navItems = [
   { key: 'nav.home', href: '/' },
-  { key: 'nav.about', href: '/about' },
-  { key: 'nav.services', href: '/services' },
-  { key: 'nav.training', href: '/training' },
-  { key: 'nav.blog', href: '/blog' },
+  { 
+    key: 'nav.discover', 
+    href: '#',
+    submenu: [
+      { key: 'nav.restaurants', href: '/restaurants' },
+      { key: 'nav.hebergements', href: '/hebergements' },
+      { key: 'nav.activites', href: '/activites' },
+      { key: 'nav.commerces', href: '/commerces' },
+      { key: 'nav.evenements', href: '/evenements' },
+      { key: 'nav.sentiers', href: '/sentiers' },
+      { key: 'nav.articles', href: '/articles' }
+    ]
+  },
+  { 
+    key: 'nav.community', 
+    href: '#',
+    submenu: [
+      { key: 'nav.forums', href: '/forums' },
+      { key: 'nav.groupes', href: '/groupes' },
+      { key: 'nav.membres', href: '/membres' }
+    ]
+  },
+  { 
+    key: 'nav.annonces', 
+    href: '/annonces',
+    submenu: [
+      { key: 'nav.emploi', href: '/annonces/emploi' },
+      { key: 'nav.immobilier', href: '/annonces/immobilier' },
+      { key: 'nav.vente', href: '/annonces/vente' },
+      { key: 'nav.services_particuliers', href: '/annonces/services' }
+    ]
+  },
   { key: 'nav.contact', href: '/contact' }
 ];
 
-// Get localized URLs
+// Get localized URLs with submenu support
 const localizedNavItems = navItems.map(item => ({
   ...item,
   label: t(translations, item.key),
-  href: getLocalizedUrl(item.href, locale),
-  isActive: currentPath === item.href || currentPath.startsWith(item.href + '/')
+  href: item.href === '#' ? '#' : getLocalizedUrl(item.href, locale),
+  isActive: currentPath === item.href || currentPath.startsWith(item.href + '/'),
+  submenu: item.submenu ? item.submenu.map(subItem => ({
+    ...subItem,
+    label: t(translations, subItem.key),
+    href: getLocalizedUrl(subItem.href, locale),
+    isActive: currentPath === subItem.href || currentPath.startsWith(subItem.href + '/')
+  })) : undefined
 }));
 ---
 
@@ -36,7 +70,7 @@ const localizedNavItems = navItems.map(item => ({
     <div class="navbar-brand">
       <a href={getLocalizedUrl('/', locale)} class="brand-link">
         <img src="/images/logo.svg" alt="Logo" class="brand-logo" width="40" height="40" />
-        <span class="brand-text">Platform</span>
+        <span class="brand-text">Salut Annecy</span>
       </a>
     </div>
     
@@ -57,14 +91,34 @@ const localizedNavItems = navItems.map(item => ({
     <div class="navbar-nav" data-mobile-menu>
       <ul class="nav-list">
         {localizedNavItems.map((item) => (
-          <li class="nav-item">
+          <li class={`nav-item ${item.submenu ? 'has-dropdown' : ''}`}>
             <a 
               href={item.href}
               class={`nav-link ${item.isActive ? 'active' : ''}`}
               aria-current={item.isActive ? 'page' : undefined}
+              aria-haspopup={item.submenu ? 'true' : undefined}
             >
               {item.label}
+              {item.submenu && (
+                <svg class="dropdown-icon" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M7 10l5 5 5-5z"/>
+                </svg>
+              )}
             </a>
+            {item.submenu && (
+              <ul class="dropdown-menu">
+                {item.submenu.map((subItem) => (
+                  <li class="dropdown-item">
+                    <a 
+                      href={subItem.href}
+                      class={`dropdown-link ${subItem.isActive ? 'active' : ''}`}
+                    >
+                      {subItem.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
@@ -225,6 +279,13 @@ const localizedNavItems = navItems.map(item => ({
   
   .nav-item {
     display: flex;
+    position: relative;
+  }
+
+  .nav-item.has-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
   }
   
   .nav-link {
@@ -237,6 +298,7 @@ const localizedNavItems = navItems.map(item => ({
     transition: var(--transition-all);
     font-weight: var(--font-weight-medium);
     min-height: 44px;
+    gap: var(--space-2);
   }
   
   .nav-link:hover {
@@ -245,6 +307,57 @@ const localizedNavItems = navItems.map(item => ({
   }
   
   .nav-link.active {
+    color: var(--color-accent);
+    background-color: var(--color-primary-50);
+  }
+
+  .dropdown-icon {
+    transition: transform 0.2s ease;
+  }
+
+  .nav-item.has-dropdown:hover .dropdown-icon {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    min-width: 200px;
+    padding: var(--space-2);
+    list-style: none;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 100;
+  }
+
+  .dropdown-item {
+    margin: 0;
+  }
+
+  .dropdown-link {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-base);
+    transition: var(--transition-all);
+    font-size: var(--font-size-sm);
+  }
+
+  .dropdown-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+  }
+
+  .dropdown-link.active {
     color: var(--color-accent);
     background-color: var(--color-primary-50);
   }

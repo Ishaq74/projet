@@ -1,0 +1,651 @@
+---
+// Forums page - Community forums
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+export async function getStaticPaths() {
+  return locales.map((localeConfig) => ({
+    params: { locale: localeConfig.code },
+  }));
+}
+
+const { locale } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+// SEO data
+const title = `${t(translations, 'nav.forums')} - Salut Annecy`;
+const description = "Rejoignez la communauté d'Annecy sur nos forums. Posez vos questions, partagez vos expériences et échangez avec les locaux.";
+
+// Mock data for forum categories
+const forumCategories = [
+  {
+    id: 1,
+    name: "Vie Quotidienne à Annecy",
+    description: "Questions pratiques, bons plans et conseils pour vivre à Annecy",
+    icon: "🏠",
+    topicsCount: 234,
+    postsCount: 1567,
+    lastPost: {
+      title: "Meilleurs quartiers pour jeunes familles",
+      author: "Marie_Annecy",
+      date: "2024-01-15T10:30:00Z"
+    }
+  },
+  {
+    id: 2,
+    name: "Tourisme et Découverte",
+    description: "Conseils pour visiter Annecy et ses environs",
+    icon: "🗺️",
+    topicsCount: 189,
+    postsCount: 892,
+    lastPost: {
+      title: "Randonnée au Semnoz en hiver",
+      author: "RandoSavoie",
+      date: "2024-01-14T16:45:00Z"
+    }
+  },
+  {
+    id: 3,
+    name: "Emploi et Formation",
+    description: "Offres d'emploi, conseils carrière et formations",
+    icon: "💼",
+    topicsCount: 67,
+    postsCount: 234,
+    lastPost: {
+      title: "Recherche développeur web",
+      author: "TechAnnecy",
+      date: "2024-01-14T09:15:00Z"
+    }
+  },
+  {
+    id: 4,
+    name: "Événements et Sorties",
+    description: "Organiser et partager les événements locaux",
+    icon: "🎉",
+    topicsCount: 145,
+    postsCount: 678,
+    lastPost: {
+      title: "Soirée board game ce weekend",
+      author: "JeuAnnecy",
+      date: "2024-01-13T20:30:00Z"
+    }
+  },
+  {
+    id: 5,
+    name: "Petites Annonces",
+    description: "Acheter, vendre, échanger entre voisins",
+    icon: "🛒",
+    topicsCount: 298,
+    postsCount: 567,
+    lastPost: {
+      title: "Vends vélo électrique",
+      author: "CycloAnnecy",
+      date: "2024-01-13T14:20:00Z"
+    }
+  }
+];
+
+const recentTopics = [
+  {
+    id: 1,
+    title: "Meilleurs restaurants végétariens ?",
+    author: "VeggieLife",
+    category: "Vie Quotidienne",
+    replies: 12,
+    views: 145,
+    lastReply: "2024-01-15T11:30:00Z"
+  },
+  {
+    id: 2,
+    title: "Parking gratuit centre-ville",
+    author: "ConducteurAnnecy",
+    category: "Vie Quotidienne",
+    replies: 8,
+    views: 234,
+    lastReply: "2024-01-15T10:15:00Z"
+  },
+  {
+    id: 3,
+    title: "Festival d'été 2024",
+    author: "EventPlanner",
+    category: "Événements",
+    replies: 5,
+    views: 89,
+    lastReply: "2024-01-14T18:45:00Z"
+  }
+];
+---
+
+<Layout 
+  title={title} 
+  description={description} 
+  locale={locale}
+>
+  <Navigation locale={locale} currentPath="/forums" />
+  
+  <main class="forums-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <h1 class="page-title">{t(translations, 'nav.forums')}</h1>
+        <p class="page-description">
+          Rejoignez la communauté d'Annecy sur nos forums. Posez vos questions, partagez vos expériences et échangez avec les locaux.
+        </p>
+        <div class="forum-stats">
+          <div class="stat-item">
+            <span class="stat-number">1,234</span>
+            <span class="stat-label">Membres</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">933</span>
+            <span class="stat-label">Sujets</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">3,938</span>
+            <span class="stat-label">Messages</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Forum Categories -->
+    <section class="categories-section">
+      <div class="container">
+        <h2 class="section-title">Catégories du Forum</h2>
+        
+        <div class="categories-grid">
+          {forumCategories.map((category) => (
+            <article class="category-card">
+              <div class="category-header">
+                <div class="category-icon">{category.icon}</div>
+                <div class="category-info">
+                  <h3 class="category-name">
+                    <a href={`/${locale}/forums/${category.id}`}>{category.name}</a>
+                  </h3>
+                  <p class="category-description">{category.description}</p>
+                </div>
+              </div>
+              
+              <div class="category-stats">
+                <div class="stat-group">
+                  <span class="stat-number">{category.topicsCount}</span>
+                  <span class="stat-label">sujets</span>
+                </div>
+                <div class="stat-group">
+                  <span class="stat-number">{category.postsCount}</span>
+                  <span class="stat-label">messages</span>
+                </div>
+              </div>
+              
+              <div class="last-post">
+                <div class="last-post-title">{category.lastPost.title}</div>
+                <div class="last-post-meta">
+                  par <strong>{category.lastPost.author}</strong>
+                  <time>{new Date(category.lastPost.date).toLocaleDateString('fr-FR')}</time>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Activity -->
+    <section class="recent-section">
+      <div class="container">
+        <div class="recent-content">
+          <div class="recent-topics">
+            <h2 class="section-title">Sujets Récents</h2>
+            <div class="topics-list">
+              {recentTopics.map((topic) => (
+                <article class="topic-item">
+                  <div class="topic-info">
+                    <h4 class="topic-title">
+                      <a href={`/${locale}/forums/sujet/${topic.id}`}>{topic.title}</a>
+                    </h4>
+                    <div class="topic-meta">
+                      <span class="topic-category">{topic.category}</span>
+                      <span class="topic-author">par {topic.author}</span>
+                    </div>
+                  </div>
+                  <div class="topic-stats">
+                    <div class="stat-item">
+                      <span class="stat-number">{topic.replies}</span>
+                      <span class="stat-label">réponses</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-number">{topic.views}</span>
+                      <span class="stat-label">vues</span>
+                    </div>
+                  </div>
+                  <div class="topic-last-reply">
+                    {new Date(topic.lastReply).toLocaleDateString('fr-FR')}
+                  </div>
+                </article>
+              ))}
+            </div>
+            <a href={`/${locale}/forums/recent`} class="btn btn-ghost">
+              Voir tous les sujets récents
+            </a>
+          </div>
+
+          <div class="forum-sidebar">
+            <div class="sidebar-widget">
+              <h3>Nouveau sur le forum ?</h3>
+              <p>Créez votre compte pour participer aux discussions et découvrir la communauté d'Annecy.</p>
+              <a href={`/${locale}/auth/register`} class="btn btn-primary btn-block">
+                Créer un compte
+              </a>
+            </div>
+
+            <div class="sidebar-widget">
+              <h3>Règles du Forum</h3>
+              <ul class="rules-list">
+                <li>Respectez les autres membres</li>
+                <li>Pas de spam ou de publicité</li>
+                <li>Utilisez des titres clairs</li>
+                <li>Recherchez avant de poster</li>
+              </ul>
+              <a href={`/${locale}/forums/regles`} class="link">
+                Voir toutes les règles
+              </a>
+            </div>
+
+            <div class="sidebar-widget">
+              <h3>Membres Actifs</h3>
+              <div class="active-members">
+                <div class="member-item">
+                  <div class="member-avatar">👤</div>
+                  <div class="member-info">
+                    <div class="member-name">Marie_Annecy</div>
+                    <div class="member-posts">234 messages</div>
+                  </div>
+                </div>
+                <div class="member-item">
+                  <div class="member-avatar">👤</div>
+                  <div class="member-info">
+                    <div class="member-name">RandoSavoie</div>
+                    <div class="member-posts">189 messages</div>
+                  </div>
+                </div>
+                <div class="member-item">
+                  <div class="member-avatar">👤</div>
+                  <div class="member-info">
+                    <div class="member-name">TechAnnecy</div>
+                    <div class="member-posts">156 messages</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .forums-page {
+    min-height: 100vh;
+  }
+
+  .hero-section {
+    background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+    color: white;
+    padding: 4rem 0 3rem;
+  }
+
+  .page-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .page-description {
+    font-size: 1.25rem;
+    text-align: center;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+
+  .forum-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+
+  .categories-section {
+    padding: 3rem 0;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #1f2937;
+  }
+
+  .categories-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .category-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  .category-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .category-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .category-info {
+    flex: 1;
+  }
+
+  .category-name a {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .category-name a:hover {
+    color: #8b5cf6;
+  }
+
+  .category-description {
+    color: #6b7280;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+
+  .category-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    min-width: 80px;
+  }
+
+  .stat-group .stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #8b5cf6;
+  }
+
+  .stat-group .stat-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+  }
+
+  .last-post {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+  }
+
+  .last-post-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+  }
+
+  .last-post-meta {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .recent-section {
+    background: #f9fafb;
+    padding: 3rem 0;
+  }
+
+  .recent-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+  }
+
+  .topics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .topic-item {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 1rem;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .topic-title a {
+    font-weight: 600;
+    color: #1f2937;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .topic-title a:hover {
+    color: #8b5cf6;
+  }
+
+  .topic-meta {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+
+  .topic-category {
+    background: #e5e7eb;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    margin-right: 0.5rem;
+  }
+
+  .topic-stats {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .topic-stats .stat-item {
+    text-align: center;
+  }
+
+  .topic-stats .stat-number {
+    display: block;
+    font-weight: 600;
+    color: #8b5cf6;
+  }
+
+  .topic-stats .stat-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .topic-last-reply {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-align: right;
+  }
+
+  .forum-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .sidebar-widget {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar-widget h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+
+  .sidebar-widget p {
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .rules-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+  }
+
+  .rules-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .rules-list li:last-child {
+    border-bottom: none;
+  }
+
+  .active-members {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .member-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .member-avatar {
+    width: 40px;
+    height: 40px;
+    background: #e5e7eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .member-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.875rem;
+  }
+
+  .member-posts {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .link {
+    color: #8b5cf6;
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .forum-stats {
+      gap: 2rem;
+    }
+
+    .recent-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .topic-item {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .topic-stats {
+      justify-content: flex-start;
+    }
+
+    .topic-last-reply {
+      text-align: left;
+    }
+
+    .category-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .category-stats {
+      justify-content: center;
+    }
+  }
+</style>
