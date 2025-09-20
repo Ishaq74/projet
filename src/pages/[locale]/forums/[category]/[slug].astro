@@ -1,0 +1,960 @@
+---
+// Individual Forum Topic Page
+import Layout from '../../../../layouts/Layout.astro';
+import Navigation from '../../../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../../../utils/i18n';
+import type { Locale } from '../../../../types/i18n';
+
+export async function getStaticPaths() {
+  // Mock forum topics data
+  const topics = [
+    {
+      slug: "meilleurs-restaurants-vegetariens-annecy",
+      category: "vie-quotidienne",
+      title: "Meilleurs restaurants végétariens à Annecy ?",
+      description: "Je cherche des recommandations pour des restaurants végétariens sympas à Annecy.",
+      content: `
+        <p>Salut tout le monde ! 🌱</p>
+        <p>Je viens de déménager à Annecy et je suis végétarienne. Je cherche des bonnes adresses de restaurants qui proposent des plats végétariens variés et savoureux.</p>
+        <p>Quelques critères qui m'intéressent :</p>
+        <ul>
+          <li>Cadre sympa pour des sorties entre amis</li>
+          <li>Bon rapport qualité-prix</li>
+          <li>Si possible avec des options vegan aussi</li>
+          <li>Pas forcément que du végétarien, mais avec un bon choix</li>
+        </ul>
+        <p>Merci d'avance pour vos recommandations ! 😊</p>
+      `,
+      author: "VeggieLife",
+      publishedAt: new Date('2024-01-15'),
+      replies: 12,
+      views: 145,
+      tags: ["restaurants", "végétarien", "recommandations"],
+      isPinned: true,
+      isLocked: false,
+      posts: [
+        {
+          id: 1,
+          author: "LocalFoodie",
+          content: `
+            <p>Salut ! Bienvenue à Annecy ! 👋</p>
+            <p>Je te recommande vivement <strong>Green Garden</strong> sur l'avenue de France. C'est 100% végétarien avec plein d'options vegan. L'ambiance est super cosy et les prix restent corrects.</p>
+            <p>Il y a aussi <strong>Le Jardin Secret</strong> dans la vieille ville qui a une très belle carte végé, même si ce n'est pas spécialisé.</p>
+          `,
+          publishedAt: new Date('2024-01-15T09:30:00Z'),
+          likes: 8,
+          isAuthor: false
+        },
+        {
+          id: 2,
+          author: "VeganAnnecy",
+          content: `
+            <p>+1 pour Green Garden ! Leur Buddha Bowl est excellent 🥗</p>
+            <p>Je rajouterais <strong>Natura</strong> près du lac. Ils font de super salades et quelques plats chauds végé. Et la vue est magnifique !</p>
+            <p>Par contre évitez le resto de la gare, très décevant niveau végé...</p>
+          `,
+          publishedAt: new Date('2024-01-15T10:15:00Z'),
+          likes: 5,
+          isAuthor: false
+        },
+        {
+          id: 3,
+          author: "VeggieLife",
+          content: `
+            <p>Merci beaucoup pour ces recommandations ! 🙏</p>
+            <p>Je vais tester Green Garden ce weekend. Vous avez des plats à recommander en particulier ?</p>
+          `,
+          publishedAt: new Date('2024-01-15T11:30:00Z'),
+          likes: 2,
+          isAuthor: true
+        }
+      ]
+    },
+    {
+      slug: "quartiers-jeunes-familles-conseils",
+      category: "vie-quotidienne",
+      title: "Quartiers pour jeunes familles - conseils ?",
+      description: "Nous allons déménager à Annecy avec nos deux enfants. Quels quartiers recommandez-vous ?",
+      content: `
+        <p>Bonjour la communauté,</p>
+        <p>Mon conjoint et moi allons déménager à Annecy cet été avec nos deux enfants (5 et 8 ans). Nous cherchons le quartier idéal pour une jeune famille.</p>
+        <p>Nos critères principaux :</p>
+        <ul>
+          <li>Proximité des écoles primaires</li>
+          <li>Espaces verts pour les enfants</li>
+          <li>Transports en commun pratiques</li>
+          <li>Commerces de proximité</li>
+          <li>Ambiance familiale et sécurisée</li>
+        </ul>
+        <p>Budget logement : environ 1200-1500€/mois pour un T4.</p>
+        <p>Merci pour vos conseils ! 😊</p>
+      `,
+      author: "Marie_Annecy",
+      publishedAt: new Date('2024-01-14'),
+      replies: 8,
+      views: 89,
+      tags: ["quartiers", "famille", "enfants", "logement"],
+      isPinned: false,
+      isLocked: false,
+      posts: [
+        {
+          id: 1,
+          author: "Papa74",
+          content: `
+            <p>Salut ! Nous avons des enfants du même âge 👶</p>
+            <p>Je recommande vivement le quartier de <strong>Seynod</strong>. Très familial, excellentes écoles, beaucoup d'espaces verts et bien desservi par les bus.</p>
+            <p>Dans votre budget, vous devriez trouver facilement un T4 avec jardin.</p>
+          `,
+          publishedAt: new Date('2024-01-14T16:45:00Z'),
+          likes: 6,
+          isAuthor: false
+        },
+        {
+          id: 2,
+          author: "MamanAnnecy",
+          content: `
+            <p>+1 pour Seynod ! Nous y habitons depuis 3 ans avec nos enfants.</p>
+            <p>Je recommande aussi <strong>Cran-Gevrier</strong>, côté Novel. Très bien pour les familles et proche du centre-ville.</p>
+            <p>Évitez peut-être le centre historique avec des enfants, c'est beau mais pas très pratique au quotidien.</p>
+          `,
+          publishedAt: new Date('2024-01-14T18:20:00Z'),
+          likes: 4,
+          isAuthor: false
+        }
+      ]
+    },
+    {
+      slug: "randonnee-semnoz-accessible-hiver",
+      category: "tourisme-decouverte",
+      title: "Randonnée au Semnoz accessible en hiver ?",
+      description: "Est-ce que les sentiers du Semnoz sont praticables en cette saison ?",
+      content: `
+        <p>Salut les randonneurs ! 🥾</p>
+        <p>Je souhaiterais faire une randonnée au Semnoz ce weekend, mais je me demande si les sentiers sont praticables en cette saison ?</p>
+        <p>Questions :</p>
+        <ul>
+          <li>Y a-t-il encore de la neige ?</li>
+          <li>Faut-il des équipements spéciaux ?</li>
+          <li>Quels sentiers recommandez-vous ?</li>
+          <li>Les routes d'accès sont-elles dégagées ?</li>
+        </ul>
+        <p>Merci pour vos conseils ! ⛷️</p>
+      `,
+      author: "RandoSavoie",
+      publishedAt: new Date('2024-01-14'),
+      replies: 15,
+      views: 234,
+      tags: ["randonnée", "semnoz", "hiver", "montagne"],
+      isPinned: false,
+      isLocked: false,
+      posts: [
+        {
+          id: 1,
+          author: "MontagnardAnnecy",
+          content: `
+            <p>Salut ! J'y étais hier 🏔️</p>
+            <p>Alors pour répondre à tes questions :</p>
+            <ul>
+              <li>✅ Oui il y a encore de la neige à partir de 1200m</li>
+              <li>⚠️ Raquettes recommandées ou crampons selon le sentier</li>
+              <li>🥾 Le sentier du crêt de Chatillon est bien balisé</li>
+              <li>🚗 Routes dégagées jusqu'au parking des Puisots</li>
+            </ul>
+            <p>Attention aux conditions météo qui changent vite !</p>
+          `,
+          publishedAt: new Date('2024-01-14T18:20:00Z'),
+          likes: 12,
+          isAuthor: false
+        }
+      ]
+    }
+  ];
+  
+  const paths = [];
+  
+  for (const localeConfig of locales) {
+    for (const topic of topics) {
+      paths.push({
+        params: { 
+          locale: localeConfig.code,
+          category: topic.category,
+          slug: topic.slug
+        },
+        props: { topic }
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const { locale, category, slug } = Astro.params;
+const { topic } = Astro.props;
+const translations = await loadTranslations(locale as Locale);
+
+const categoryMap: Record<string, any> = {
+  'vie-quotidienne': {
+    name: 'Vie Quotidienne à Annecy',
+    icon: '🏠'
+  },
+  'tourisme-decouverte': {
+    name: 'Tourisme et Découverte',
+    icon: '🗺️'
+  },
+  'emploi-formation': {
+    name: 'Emploi et Formation',
+    icon: '💼'
+  },
+  'evenements-sorties': {
+    name: 'Événements et Sorties',
+    icon: '🎉'
+  },
+  'petites-annonces': {
+    name: 'Petites Annonces',
+    icon: '🛒'
+  }
+};
+
+const categoryInfo = categoryMap[category as string] || {
+  name: category,
+  icon: '💬'
+};
+
+const title = `${topic.title} - ${categoryInfo.name} - ${t(translations, 'nav.forums')} - Salut Annecy`;
+const description = topic.description;
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/forums" />
+  
+  <article class="topic-page">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href={`/${locale}/forums`}>{t(translations, 'nav.forums')}</a>
+        <span class="separator">›</span>
+        <a href={`/${locale}/forums/${category}`}>{categoryInfo.icon} {categoryInfo.name}</a>
+        <span class="separator">›</span>
+        <span class="current">{topic.title}</span>
+      </nav>
+      
+      <!-- Topic Header -->
+      <header class="topic-header">
+        <div class="topic-badges">
+          {topic.isPinned && <span class="badge pinned">📌 Épinglé</span>}
+          {topic.isLocked && <span class="badge locked">🔒 Verrouillé</span>}
+        </div>
+        
+        <h1 class="topic-title">{topic.title}</h1>
+        
+        <div class="topic-meta">
+          <div class="author-info">
+            <span class="author-label">Créé par</span>
+            <span class="author-name">{topic.author}</span>
+            <span class="topic-date">{topic.publishedAt.toLocaleDateString('fr-FR')}</span>
+          </div>
+          
+          <div class="topic-stats">
+            <span class="stat">{topic.replies} réponses</span>
+            <span class="stat">{topic.views} vues</span>
+          </div>
+        </div>
+        
+        <div class="topic-tags">
+          {topic.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </header>
+      
+      <!-- Topic Content -->
+      <div class="topic-layout">
+        <main class="topic-main">
+          <!-- Original Post -->
+          <div class="post original-post">
+            <div class="post-author">
+              <div class="author-avatar">👤</div>
+              <div class="author-details">
+                <div class="author-name">{topic.author}</div>
+                <div class="author-title">Membre</div>
+                <div class="post-date">
+                  {topic.publishedAt.toLocaleDateString('fr-FR')} à {topic.publishedAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            </div>
+            
+            <div class="post-content">
+              <div class="prose" set:html={topic.content} />
+            </div>
+            
+            <div class="post-actions">
+              <button class="action-btn like-btn" onclick="toggleLike(this)">
+                👍 J'aime
+              </button>
+              <button class="action-btn reply-btn" onclick="scrollToReply()">
+                💬 Répondre
+              </button>
+              <button class="action-btn share-btn" onclick="sharePost()">
+                📤 Partager
+              </button>
+            </div>
+          </div>
+          
+          <!-- Replies -->
+          {topic.posts && topic.posts.length > 0 && (
+            <div class="replies-section">
+              <h2 class="replies-title">Réponses ({topic.posts.length})</h2>
+              
+              {topic.posts.map((post, index) => (
+                <div class={`post reply ${post.isAuthor ? 'author-reply' : ''}`}>
+                  <div class="post-number">#{index + 2}</div>
+                  
+                  <div class="post-author">
+                    <div class="author-avatar">👤</div>
+                    <div class="author-details">
+                      <div class="author-name">
+                        {post.author}
+                        {post.isAuthor && <span class="author-badge">Auteur</span>}
+                      </div>
+                      <div class="author-title">Membre</div>
+                      <div class="post-date">
+                        {post.publishedAt.toLocaleDateString('fr-FR')} à {post.publishedAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="post-content">
+                    <div class="prose" set:html={post.content} />
+                  </div>
+                  
+                  <div class="post-actions">
+                    <button class="action-btn like-btn" onclick="toggleLike(this)">
+                      👍 J'aime {post.likes > 0 && `(${post.likes})`}
+                    </button>
+                    <button class="action-btn reply-btn" onclick="quotePost(this)">
+                      📝 Citer
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          <!-- Reply Form -->
+          {!topic.isLocked && (
+            <div class="reply-form-section" id="reply-form">
+              <h3>Répondre au sujet</h3>
+              <form class="reply-form">
+                <div class="form-group">
+                  <textarea 
+                    class="reply-textarea" 
+                    placeholder="Écrivez votre réponse..."
+                    rows="6"
+                    required
+                  ></textarea>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    Publier la réponse
+                  </button>
+                  <button type="button" class="btn btn-ghost">
+                    Aperçu
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+          
+          {topic.isLocked && (
+            <div class="locked-notice">
+              <h3>🔒 Sujet verrouillé</h3>
+              <p>Ce sujet a été verrouillé et n'accepte plus de nouvelles réponses.</p>
+            </div>
+          )}
+        </main>
+        
+        <!-- Sidebar -->
+        <aside class="topic-sidebar">
+          <!-- Navigation -->
+          <div class="sidebar-widget card">
+            <div class="card-body">
+              <h3 class="widget-title">Navigation</h3>
+              <div class="nav-links">
+                <a href={`/${locale}/forums/${category}`} class="nav-link">
+                  ← Retour à {categoryInfo.name}
+                </a>
+                <a href={`/${locale}/forums`} class="nav-link">
+                  Toutes les catégories
+                </a>
+                <a href={`/${locale}/forums/${category}/nouveau-sujet`} class="nav-link">
+                  Nouveau sujet
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Topic Actions -->
+          <div class="sidebar-widget card">
+            <div class="card-body">
+              <h3 class="widget-title">Actions</h3>
+              <div class="topic-actions">
+                <button class="action-btn" onclick="watchTopic()">
+                  👁️ Suivre le sujet
+                </button>
+                <button class="action-btn" onclick="sharePost()">
+                  📤 Partager
+                </button>
+                <button class="action-btn" onclick="reportTopic()">
+                  🚨 Signaler
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Similar Topics -->
+          <div class="sidebar-widget card">
+            <div class="card-body">
+              <h3 class="widget-title">Sujets similaires</h3>
+              <div class="similar-topics">
+                <a href="#" class="similar-topic">
+                  Restaurants bio à Annecy ?
+                </a>
+                <a href="#" class="similar-topic">
+                  Bonnes adresses lunch rapide
+                </a>
+                <a href="#" class="similar-topic">
+                  Terrasses avec vue sur le lac
+                </a>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<script>
+  function toggleLike(button: any) {
+    button.classList.toggle('liked');
+    const text = button.textContent?.trim();
+    if (button.classList.contains('liked')) {
+      button.innerHTML = '👍 Aimé';
+      button.style.background = '#8b5cf6';
+      button.style.color = 'white';
+    } else {
+      button.innerHTML = '👍 J\'aime';
+      button.style.background = '';
+      button.style.color = '';
+    }
+  }
+  
+  function scrollToReply() {
+    document.getElementById('reply-form')?.scrollIntoView({ behavior: 'smooth' });
+  }
+  
+  function quotePost(button: any) {
+    const post = button.closest('.post');
+    const authorName = post.querySelector('.author-name').textContent?.trim();
+    const content = post.querySelector('.prose').textContent?.trim();
+    
+    const textarea = document.querySelector('.reply-textarea') as HTMLTextAreaElement;
+    if (textarea && authorName && content) {
+      textarea.value += `[quote="${authorName}"]\n${content}\n[/quote]\n\n`;
+      textarea.focus();
+    }
+  }
+  
+  function sharePost() {
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Lien copié dans le presse-papiers!');
+      });
+    }
+  }
+  
+  function watchTopic() {
+    alert('Vous suivez maintenant ce sujet. Vous serez notifié des nouvelles réponses.');
+  }
+  
+  function reportTopic() {
+    alert('Merci pour votre signalement. Nous allons examiner ce sujet.');
+  }
+</script>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem 0 1rem 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .breadcrumb a {
+    color: #8b5cf6;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .separator {
+    color: #d1d5db;
+  }
+
+  .current {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .topic-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .topic-badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .badge.pinned {
+    background: #fbbf24;
+    color: #92400e;
+  }
+
+  .badge.locked {
+    background: #6b7280;
+    color: white;
+  }
+
+  .topic-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .topic-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+  }
+
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .author-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .author-name {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .topic-date {
+    color: #9ca3af;
+    font-size: 0.875rem;
+  }
+
+  .topic-stats {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .stat {
+    color: #374151;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .topic-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .topic-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .post {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .post.original-post {
+    border: 2px solid #8b5cf6;
+  }
+
+  .post.author-reply {
+    border-left: 4px solid #10b981;
+  }
+
+  .post-number {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #f3f4f6;
+    color: #6b7280;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .post-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .author-avatar {
+    width: 48px;
+    height: 48px;
+    background: #f3f4f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .author-details {
+    flex: 1;
+  }
+
+  .author-details .author-name {
+    font-weight: 600;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .author-badge {
+    background: #10b981;
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  .author-title {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .post-date {
+    color: #9ca3af;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .post-content {
+    padding: 0 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose {
+    line-height: 1.7;
+    color: #374151;
+  }
+
+  .prose p {
+    margin-bottom: 1rem;
+  }
+
+  .prose ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose strong {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .post-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #f3f4f6;
+    background: #f9fafb;
+  }
+
+  .action-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+  }
+
+  .action-btn:hover {
+    background: #f3f4f6;
+    border-color: #8b5cf6;
+    color: #8b5cf6;
+  }
+
+  .replies-section {
+    margin: 2rem 0;
+  }
+
+  .replies-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #8b5cf6;
+  }
+
+  .reply-form-section {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .reply-form-section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .reply-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  .reply-textarea:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #7c3aed;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #8b5cf6;
+    border: 1px solid #8b5cf6;
+  }
+
+  .btn-ghost:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .locked-notice {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .locked-notice h3 {
+    color: #dc2626;
+    margin-bottom: 0.5rem;
+  }
+
+  .locked-notice p {
+    color: #7f1d1d;
+  }
+
+  .topic-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-widget {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-link {
+    color: #8b5cf6;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+  }
+
+  .nav-link:hover {
+    background: #f3f4f6;
+  }
+
+  .topic-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .similar-topics {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .similar-topic {
+    color: #6b7280;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+  }
+
+  .similar-topic:hover {
+    background: #f3f4f6;
+    color: #8b5cf6;
+  }
+
+  @media (max-width: 768px) {
+    .topic-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .topic-title {
+      font-size: 2rem;
+    }
+    
+    .topic-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .post-actions {
+      flex-wrap: wrap;
+    }
+    
+    .current {
+      max-width: 150px;
+    }
+  }
+</style>
