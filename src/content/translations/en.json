@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "training": "Training",
+    "blog": "Blog",
+    "contact": "Contact",
+    "profile": "Profile",
+    "admin": "Admin",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "search": "Search",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open"
+  },
+  "form": {
+    "required": "This field is required",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "message": "Message",
+    "subject": "Subject"
+  },
+  "auth": {
+    "login": "Log In",
+    "register": "Sign Up",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "emailVerification": "Email Verification"
+  },
+  "blog": {
+    "readMore": "Read More",
+    "categories": "Categories",
+    "tags": "Tags",
+    "author": "Author",
+    "publishedOn": "Published on",
+    "comments": "Comments",
+    "addComment": "Add Comment",
+    "noComments": "No comments"
+  },
+  "seo": {
+    "home": {
+      "title": "Home - Ultra-Complete Web Platform",
+      "description": "Discover our modern and complete web platform built with Astro, TypeScript and native design."
+    },
+    "about": {
+      "title": "About - Our Story",
+      "description": "Learn more about our team and mission."
+    },
+    "blog": {
+      "title": "Blog - Articles and News",
+      "description": "Discover our latest articles, news and tips."
+    }
+  }
+}

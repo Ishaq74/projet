@@ -1,0 +1,5 @@
+---
+// Root index page - redirects to default locale
+import { defaultLocale } from '../utils/i18n';
+return Astro.redirect(`/${defaultLocale}/`);
+---

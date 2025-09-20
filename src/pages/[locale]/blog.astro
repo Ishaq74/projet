@@ -1,0 +1,420 @@
+---
+// Blog Index Page
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+export async function getStaticPaths() {
+  return locales.map((localeConfig) => ({
+    params: { locale: localeConfig.code },
+  }));
+}
+
+const { locale } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+const title = t(translations, 'seo.blog.title');
+const description = t(translations, 'seo.blog.description');
+
+// Mock blog posts for now
+const posts = [
+  {
+    id: 1,
+    title: 'Building Modern Web Applications with Astro',
+    slug: 'building-modern-web-applications-with-astro',
+    excerpt: 'Learn how to create fast, SEO-friendly websites using Astro framework with islands architecture.',
+    publishedAt: new Date('2024-01-15'),
+    author: 'John Doe',
+    category: 'Development',
+    tags: ['Astro', 'TypeScript', 'Web Performance'],
+    readingTime: '5 min read'
+  },
+  {
+    id: 2,
+    title: 'The Importance of Web Accessibility',
+    slug: 'importance-of-web-accessibility',
+    excerpt: 'Understanding why accessibility matters and how to implement ARIA attributes and semantic HTML.',
+    publishedAt: new Date('2024-01-10'),
+    author: 'Jane Smith',
+    category: 'Accessibility',
+    tags: ['Accessibility', 'ARIA', 'UX'],
+    readingTime: '7 min read'
+  },
+  {
+    id: 3,
+    title: 'Internationalization Best Practices',
+    slug: 'internationalization-best-practices',
+    excerpt: 'How to build multilingual applications that provide great user experience across different cultures.',
+    publishedAt: new Date('2024-01-05'),
+    author: 'Alex Johnson',
+    category: 'Internationalization',
+    tags: ['i18n', 'Localization', 'Global UX'],
+    readingTime: '6 min read'
+  }
+];
+
+const categories = [
+  'Development',
+  'Accessibility', 
+  'Internationalization',
+  'Design',
+  'Performance'
+];
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/blog" />
+  
+  <div class="container">
+    <section class="blog-hero">
+      <h1 class="page-title">{t(translations, 'nav.blog')}</h1>
+      <p class="page-description">
+        {t(translations, 'seo.blog.description')}
+      </p>
+    </section>
+    
+    <div class="blog-layout">
+      <!-- Main Content -->
+      <main class="blog-main">
+        <div class="posts-grid">
+          {posts.map((post) => (
+            <article class="post-card card">
+              <div class="card-body">
+                <div class="post-meta">
+                  <span class="post-category">{post.category}</span>
+                  <span class="post-reading-time">{post.readingTime}</span>
+                </div>
+                
+                <h2 class="post-title">
+                  <a href={`/${locale}/blog/${post.slug}`}>
+                    {post.title}
+                  </a>
+                </h2>
+                
+                <p class="post-excerpt">{post.excerpt}</p>
+                
+                <div class="post-tags">
+                  {post.tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+                
+                <div class="post-footer">
+                  <div class="post-author">
+                    <span>{t(translations, 'blog.author')}: {post.author}</span>
+                  </div>
+                  <div class="post-date">
+                    <time datetime={post.publishedAt.toISOString()}>
+                      {post.publishedAt.toLocaleDateString(locale)}
+                    </time>
+                  </div>
+                </div>
+                
+                <a href={`/${locale}/blog/${post.slug}`} class="btn btn-primary btn-sm">
+                  {t(translations, 'blog.readMore')}
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+        
+        <!-- Pagination -->
+        <nav class="pagination" aria-label="Blog pagination">
+          <a href="#" class="pagination-link" aria-label="Previous page">
+            {t(translations, 'common.previous')}
+          </a>
+          <a href="#" class="pagination-link active" aria-current="page">1</a>
+          <a href="#" class="pagination-link">2</a>
+          <a href="#" class="pagination-link">3</a>
+          <a href="#" class="pagination-link" aria-label="Next page">
+            {t(translations, 'common.next')}
+          </a>
+        </nav>
+      </main>
+      
+      <!-- Sidebar -->
+      <aside class="blog-sidebar">
+        <!-- Search -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">{t(translations, 'common.search')}</h3>
+            <form class="search-form">
+              <div class="form-group">
+                <label for="search" class="sr-only">Search blog posts</label>
+                <input 
+                  type="search" 
+                  id="search"
+                  class="input"
+                  placeholder={t(translations, 'common.search')}
+                  aria-label="Search blog posts"
+                />
+                <button type="submit" class="btn btn-primary btn-sm">
+                  {t(translations, 'common.search')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">{t(translations, 'blog.categories')}</h3>
+            <ul class="category-list">
+              {categories.map((category) => (
+                <li>
+                  <a href={`/${locale}/blog/category/${category.toLowerCase()}`}>
+                    {category}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Recent Posts -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">Recent Posts</h3>
+            <ul class="recent-posts">
+              {posts.slice(0, 3).map((post) => (
+                <li>
+                  <a href={`/${locale}/blog/${post.slug}`} class="recent-post">
+                    <span class="recent-post-title">{post.title}</span>
+                    <span class="recent-post-date">
+                      {post.publishedAt.toLocaleDateString(locale)}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer slot="footer" class="footer-content">
+    <div class="footer-simple">
+      <p>&copy; 2024 Platform. All rights reserved.</p>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  .blog-hero {
+    text-align: center;
+    padding: var(--space-24) 0 var(--space-16);
+  }
+  
+  .page-title {
+    font-size: var(--font-size-5xl);
+    margin-bottom: var(--space-6);
+  }
+  
+  .page-description {
+    font-size: var(--font-size-xl);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: var(--line-height-relaxed);
+  }
+  
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-12);
+    padding-bottom: var(--space-24);
+  }
+  
+  .posts-grid {
+    display: grid;
+    gap: var(--space-8);
+  }
+  
+  .post-card {
+    transition: var(--transition-all);
+  }
+  
+  .post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+  }
+  
+  .post-category {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-800);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .post-reading-time {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .post-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-4);
+  }
+  
+  .post-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition-colors);
+  }
+  
+  .post-title a:hover {
+    color: var(--color-accent);
+  }
+  
+  .post-excerpt {
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-6);
+  }
+  
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+  
+  .tag {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-primary);
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+  }
+  
+  .blog-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  
+  .sidebar-widget {
+    position: sticky;
+    top: var(--space-20);
+  }
+  
+  .widget-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-4);
+  }
+  
+  .search-form {
+    display: flex;
+    gap: var(--space-2);
+  }
+  
+  .search-form .input {
+    flex: 1;
+  }
+  
+  .category-list,
+  .recent-posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .category-list li,
+  .recent-posts li {
+    margin-bottom: var(--space-3);
+  }
+  
+  .category-list a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition-colors);
+  }
+  
+  .category-list a:hover {
+    color: var(--color-accent);
+  }
+  
+  .recent-post {
+    display: block;
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: var(--transition-colors);
+  }
+  
+  .recent-post:hover {
+    color: var(--text-primary);
+  }
+  
+  .recent-post-title {
+    display: block;
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--space-1);
+  }
+  
+  .recent-post-date {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+  }
+  
+  .footer-simple {
+    text-align: center;
+    padding: var(--space-8) 0;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-sm);
+  }
+  
+  @media (max-width: 768px) {
+    .blog-hero {
+      padding: var(--space-16) 0 var(--space-12);
+    }
+    
+    .page-title {
+      font-size: var(--font-size-3xl);
+    }
+    
+    .page-description {
+      font-size: var(--font-size-lg);
+    }
+    
+    .blog-layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+    
+    .search-form {
+      flex-direction: column;
+    }
+    
+    .sidebar-widget {
+      position: static;
+    }
+  }
+</style>

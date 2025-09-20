@@ -1,0 +1,231 @@
+---
+// About Page
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../utils/i18n';
+import type { Locale } from '../../types/i18n';
+
+export async function getStaticPaths() {
+  return locales.map((localeConfig) => ({
+    params: { locale: localeConfig.code },
+  }));
+}
+
+const { locale } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+const title = t(translations, 'seo.about.title');
+const description = t(translations, 'seo.about.description');
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/about" />
+  
+  <div class="container">
+    <section class="about-hero">
+      <h1 class="page-title">{t(translations, 'nav.about')}</h1>
+      <p class="page-description">
+        Learn more about our mission, vision, and the team behind this ultra-complete web platform.
+      </p>
+    </section>
+    
+    <section class="about-content">
+      <div class="content-grid">
+        <div class="content-main">
+          <h2>Our Story</h2>
+          <p>
+            We are passionate about creating exceptional web experiences using modern technologies 
+            and best practices. Our platform is built with Astro, TypeScript, and native CSS to 
+            deliver optimal performance, accessibility, and user experience.
+          </p>
+          
+          <h3>Our Mission</h3>
+          <p>
+            To provide a comprehensive, accessible, and multilingual web platform that serves 
+            as a model for modern web development. We believe in the power of native technologies 
+            and semantic HTML to create inclusive digital experiences.
+          </p>
+          
+          <h3>Our Values</h3>
+          <ul>
+            <li><strong>Performance:</strong> We prioritize speed and efficiency in everything we build.</li>
+            <li><strong>Accessibility:</strong> Everyone should be able to use our platform regardless of ability.</li>
+            <li><strong>Inclusivity:</strong> We support multiple languages and cultural contexts.</li>
+            <li><strong>Quality:</strong> We maintain high standards in code quality and user experience.</li>
+            <li><strong>Innovation:</strong> We embrace new technologies while respecting web standards.</li>
+          </ul>
+        </div>
+        
+        <div class="content-sidebar">
+          <div class="card">
+            <div class="card-body">
+              <h3>Quick Facts</h3>
+              <ul class="fact-list">
+                <li>Built with Astro v5</li>
+                <li>100% TypeScript</li>
+                <li>Native CSS only</li>
+                <li>6 languages supported</li>
+                <li>5 theme variants</li>
+                <li>Fully accessible</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-body">
+              <h3>Technologies</h3>
+              <div class="tech-stack">
+                <span class="tech-badge">Astro</span>
+                <span class="tech-badge">TypeScript</span>
+                <span class="tech-badge">Nanostores</span>
+                <span class="tech-badge">Prisma</span>
+                <span class="tech-badge">CSS</span>
+                <span class="tech-badge">HTML</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- Footer -->
+  <footer slot="footer" class="footer-content">
+    <div class="footer-simple">
+      <p>&copy; 2024 Platform. All rights reserved.</p>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  .about-hero {
+    text-align: center;
+    padding: var(--space-24) 0 var(--space-16);
+  }
+  
+  .page-title {
+    font-size: var(--font-size-5xl);
+    margin-bottom: var(--space-6);
+  }
+  
+  .page-description {
+    font-size: var(--font-size-xl);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: var(--line-height-relaxed);
+  }
+  
+  .about-content {
+    padding-bottom: var(--space-24);
+  }
+  
+  .content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-12);
+  }
+  
+  .content-main h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-6);
+    margin-top: var(--space-8);
+  }
+  
+  .content-main h2:first-child {
+    margin-top: 0;
+  }
+  
+  .content-main h3 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-4);
+    margin-top: var(--space-8);
+  }
+  
+  .content-main p {
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-6);
+  }
+  
+  .content-main ul {
+    margin-bottom: var(--space-6);
+  }
+  
+  .content-main li {
+    margin-bottom: var(--space-3);
+    line-height: var(--line-height-relaxed);
+  }
+  
+  .content-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  
+  .fact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .fact-list li {
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    margin-bottom: 0;
+  }
+  
+  .fact-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  
+  .tech-badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-800);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .footer-simple {
+    text-align: center;
+    padding: var(--space-8) 0;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-sm);
+  }
+  
+  @media (max-width: 768px) {
+    .about-hero {
+      padding: var(--space-16) 0 var(--space-12);
+    }
+    
+    .page-title {
+      font-size: var(--font-size-3xl);
+    }
+    
+    .page-description {
+      font-size: var(--font-size-lg);
+    }
+    
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+    
+    .content-main h2 {
+      font-size: var(--font-size-2xl);
+    }
+  }
+</style>
