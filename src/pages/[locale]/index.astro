@@ -1,15 +1,8 @@
 ---
 // Home Page - Dynamic route for all locales
 import Layout from '../../layouts/Layout.astro';
-import Navbar from '../../components/organisms/navbar.astro';
-import Hero from '../../components/organisms/hero.astro';
-import Container from '../../components/atoms/container.astro';
-import Heading from '../../components/atoms/heading.astro';
-import Paragraph from '../../components/atoms/paragraph.astro';
-import Card from '../../components/molecules/card.astro';
-import Button from '../../components/atoms/button.astro';
-import Icon from '../../components/atoms/icon.astro';
-import { loadTranslations, t, locales } from '../../utils/i18n';
+import Navigation from '../../components/Navigation.astro';
+import { getLocaleFromUrl, loadTranslations, t, locales } from '../../utils/i18n';
 import type { Locale } from '../../types/i18n';
 
 export async function getStaticPaths() {
@@ -30,7 +23,7 @@ const description = t(translations, 'seo.home.description');
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Salut Annecy - Plateforme Communautaire",
+  "name": "Plateforme Web Ultra-Complète",
   "description": description,
   "url": Astro.site?.toString(),
   "inLanguage": locale,
@@ -48,188 +41,426 @@ const jsonLd = {
   locale={locale as Locale}
   jsonLd={jsonLd}
 >
-  <Navbar slot="header" locale={locale as Locale} currentPath="/" />
+  <Navigation slot="header" locale={locale as Locale} currentPath="/" />
   
   <!-- Hero Section -->
-  <Hero
-    title={t(translations, 'seo.home.title')}
-    subtitle="Bienvenue à"
-    description={t(translations, 'seo.home.description')}
-    variant="gradient"
-    size="xl"
-    ctaPrimary={{
-      text: t(translations, 'nav.restaurants'),
-      href: `/${locale}/restaurants`
-    }}
-    ctaSecondary={{
-      text: t(translations, 'nav.evenements'),
-      href: `/${locale}/evenements`
-    }}
-  />
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          {t(translations, 'seo.home.title')}
+        </h1>
+        <p class="hero-description">
+          {t(translations, 'seo.home.description')}
+        </p>
+        <div class="hero-actions">
+          <a href={`/${locale}/restaurants`} class="btn btn-primary btn-lg">
+            {t(translations, 'nav.restaurants')}
+          </a>
+          <a href={`/${locale}/evenements`} class="btn btn-secondary btn-lg">
+            {t(translations, 'nav.evenements')}
+          </a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img 
+          src="/images/hero-illustration.svg" 
+          alt="Platform illustration"
+          width="600"
+          height="400"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </section>
   
   <!-- Features Section -->
   <section class="features">
-    <Container size="lg" padding="lg">
-      <div class="features-header">
-        <Heading level={2} size="3xl" align="center">Découvrez Annecy</Heading>
-        <Paragraph size="lg" color="secondary" align="center" spacing="relaxed">
-          Votre guide complet pour explorer le bassin annécien et sa communauté
-        </Paragraph>
-      </div>
-      
+    <div class="container">
+      <h2 class="section-title">Découvrez Annecy</h2>
       <div class="features-grid">
-        <Card variant="elevated" padding="lg" hoverable>
-          <div class="feature-content">
+        <div class="feature-card card">
+          <div class="card-body">
             <div class="feature-icon">
-              <Icon name="location" size="xl" color="primary" />
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
             </div>
-            <Heading level={3} size="lg" color="primary">Découverte Locale</Heading>
-            <Paragraph color="secondary" spacing="relaxed">
+            <h3 class="feature-title">Découverte Locale</h3>
+            <p class="feature-description">
               Explorez restaurants, hébergements, activités et événements du bassin annécien.
-            </Paragraph>
+            </p>
           </div>
-        </Card>
+        </div>
         
-        <Card variant="elevated" padding="lg" hoverable>
-          <div class="feature-content">
+        <div class="feature-card card">
+          <div class="card-body">
             <div class="feature-icon">
-              <Icon name="users" size="xl" color="primary" />
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
             </div>
-            <Heading level={3} size="lg" color="primary">Communauté</Heading>
-            <Paragraph color="secondary" spacing="relaxed">
-              Rejoignez forums et groupes pour échanger avec les habitants et visiteurs.
-            </Paragraph>
+            <h3 class="feature-title">Multilingual Support</h3>
+            <p class="feature-description">
+              Complete internationalization with support for 6 languages and localized content.
+            </p>
           </div>
-        </Card>
+        </div>
         
-        <Card variant="elevated" padding="lg" hoverable>
-          <div class="feature-content">
+        <div class="feature-card card">
+          <div class="card-body">
             <div class="feature-icon">
-              <Icon name="briefcase" size="xl" color="primary" />
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
             </div>
-            <Heading level={3} size="lg" color="primary">Petites Annonces</Heading>
-            <Paragraph color="secondary" spacing="relaxed">
-              Emploi, immobilier, vente entre particuliers dans la région d'Annecy.
-            </Paragraph>
+            <h3 class="feature-title">Accessible Design</h3>
+            <p class="feature-description">
+              Fully accessible with ARIA support, keyboard navigation, and screen reader compatibility.
+            </p>
           </div>
-        </Card>
+        </div>
         
-        <Card variant="elevated" padding="lg" hoverable>
-          <div class="feature-content">
+        <div class="feature-card card">
+          <div class="card-body">
             <div class="feature-icon">
-              <Icon name="map" size="xl" color="primary" />
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
             </div>
-            <Heading level={3} size="lg" color="primary">Sentiers & Nature</Heading>
-            <Paragraph color="secondary" spacing="relaxed">
-              Découvrez randonnées, sentiers et espaces naturels autour du lac d'Annecy.
-            </Paragraph>
+            <h3 class="feature-title">Modern Design System</h3>
+            <p class="feature-description">
+              Comprehensive design system with multiple themes and native CSS components.
+            </p>
           </div>
-        </Card>
+        </div>
       </div>
-    </Container>
+    </div>
   </section>
   
   <!-- CTA Section -->
-  <section class="cta-section">
-    <Container size="lg" padding="lg">
-      <Card variant="elevated" padding="lg">
-        <div class="cta-content">
-          <Heading level={2} size="2xl" align="center" color="primary">
-            Rejoignez la Communauté Salut Annecy
-          </Heading>
-          <Paragraph size="lg" color="secondary" align="center" spacing="relaxed">
-            Connectez-vous avec les habitants, découvrez les bons plans et participez à la vie locale
-          </Paragraph>
-          <div class="cta-actions">
-            <Button variant="primary" size="lg" href={`/${locale}/auth/register`}>
-              Créer un compte
-            </Button>
-            <Button variant="secondary" size="lg" href={`/${locale}/about`}>
-              En savoir plus
-            </Button>
-          </div>
+  <section class="cta">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title">Ready to Get Started?</h2>
+        <p class="cta-description">
+          Explore our platform and discover how we can help you build amazing digital experiences.
+        </p>
+        <div class="cta-actions">
+          <a href={`/${locale}/contact`} class="btn btn-primary btn-lg">
+            {t(translations, 'nav.contact')}
+          </a>
+          <a href={`/${locale}/services`} class="btn btn-ghost btn-lg">
+            {t(translations, 'nav.services')}
+          </a>
         </div>
-      </Card>
-    </Container>
+      </div>
+    </div>
   </section>
+  
+  <!-- Footer -->
+  <footer slot="footer" class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h3 class="footer-title">Platform</h3>
+        <p class="footer-description">
+          Ultra-complete web platform built with modern technologies and best practices.
+        </p>
+      </div>
+      
+      <div class="footer-section">
+        <h4 class="footer-heading">Navigation</h4>
+        <ul class="footer-links">
+          <li><a href={`/${locale}/`}>{t(translations, 'nav.home')}</a></li>
+          <li><a href={`/${locale}/about`}>{t(translations, 'nav.about')}</a></li>
+          <li><a href={`/${locale}/services`}>{t(translations, 'nav.services')}</a></li>
+          <li><a href={`/${locale}/training`}>{t(translations, 'nav.training')}</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4 class="footer-heading">Resources</h4>
+        <ul class="footer-links">
+          <li><a href={`/${locale}/blog`}>{t(translations, 'nav.blog')}</a></li>
+          <li><a href={`/${locale}/contact`}>{t(translations, 'nav.contact')}</a></li>
+          <li><a href={`/${locale}/legal`}>Legal</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4 class="footer-heading">Connect</h4>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 Platform. All rights reserved.</p>
+    </div>
+  </footer>
 </Layout>
 
 <style>
-  .features {
+  /* Hero Section */
+  .hero {
     padding: var(--space-20) 0;
-    background-color: var(--bg-secondary);
+    background: linear-gradient(
+      135deg,
+      var(--bg-primary) 0%,
+      var(--bg-secondary) 100%
+    );
   }
-
-  .features-header {
+  
+  .hero .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+  
+  .hero-title {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--space-6);
+    color: var(--text-primary);
+  }
+  
+  .hero-description {
+    font-size: var(--font-size-xl);
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-8);
+  }
+  
+  .hero-actions {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  
+  .hero-image img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+  }
+  
+  /* Features Section */
+  .features {
+    padding: var(--space-24) 0;
+  }
+  
+  .section-title {
     text-align: center;
     margin-bottom: var(--space-16);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
+    font-size: var(--font-size-4xl);
   }
-
+  
   .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--space-8);
   }
-
-  .feature-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  
+  .feature-card {
     text-align: center;
-    gap: var(--space-4);
+    transition: var(--transition-all);
   }
-
+  
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  
   .feature-icon {
     display: flex;
-    align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
-    border-radius: var(--radius-full);
-    background-color: var(--color-primary-50);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-6);
+    color: var(--color-accent);
   }
-
-  [data-theme="dark"] .feature-icon {
-    background-color: var(--color-primary-900);
+  
+  .feature-title {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-4);
   }
-
-  .cta-section {
-    padding: var(--space-20) 0;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  
+  .feature-description {
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
   }
-
+  
+  /* CTA Section */
+  .cta {
+    padding: var(--space-24) 0;
+    background-color: var(--bg-secondary);
+  }
+  
   .cta-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     text-align: center;
-    gap: var(--space-6);
+    max-width: 600px;
+    margin: 0 auto;
   }
-
+  
+  .cta-title {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--space-6);
+  }
+  
+  .cta-description {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-8);
+    line-height: var(--line-height-relaxed);
+  }
+  
   .cta-actions {
     display: flex;
     gap: var(--space-4);
-    margin-top: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
   }
-
-  /* Responsive adjustments */
+  
+  /* Footer */
+  .footer-content {
+    padding: var(--space-16) 0 var(--space-8);
+  }
+  
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--space-12);
+    margin-bottom: var(--space-12);
+  }
+  
+  .footer-title {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-4);
+  }
+  
+  .footer-description {
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+  
+  .footer-heading {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-4);
+  }
+  
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footer-links li {
+    margin-bottom: var(--space-2);
+  }
+  
+  .footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition-colors);
+  }
+  
+  .footer-links a:hover {
+    color: var(--text-primary);
+  }
+  
+  .social-links {
+    display: flex;
+    gap: var(--space-3);
+  }
+  
+  .social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-base);
+    text-decoration: none;
+    transition: var(--transition-all);
+  }
+  
+  .social-link:hover {
+    background-color: var(--color-accent);
+    color: var(--text-inverse);
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-primary);
+    color: var(--text-tertiary);
+    font-size: var(--font-size-sm);
+  }
+  
+  /* Mobile Styles */
   @media (max-width: 768px) {
+    .hero .container {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+      text-align: center;
+    }
+    
+    .hero-title {
+      font-size: var(--font-size-3xl);
+    }
+    
+    .hero-description {
+      font-size: var(--font-size-lg);
+    }
+    
+    .hero-actions {
+      justify-content: center;
+    }
+    
+    .features {
+      padding: var(--space-16) 0;
+    }
+    
     .features-grid {
       grid-template-columns: 1fr;
       gap: var(--space-6);
     }
-
-    .cta-actions {
-      flex-direction: column;
-      width: 100%;
+    
+    .cta {
+      padding: var(--space-16) 0;
     }
-
-    .cta-actions > * {
-      width: 100%;
+    
+    .cta-title {
+      font-size: var(--font-size-3xl);
+    }
+    
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+      text-align: center;
+    }
+    
+    .social-links {
+      justify-content: center;
     }
   }
 </style>
