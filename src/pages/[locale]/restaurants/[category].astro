@@ -1,0 +1,574 @@
+---
+// Restaurant Category Page
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/Navigation.astro';
+import { loadTranslations, t, locales } from '../../../utils/i18n';
+import type { Locale } from '../../../types/i18n';
+
+export async function getStaticPaths() {
+  const categories = [
+    'gastronomique',
+    'savoyard', 
+    'sur-le-pouce',
+    'cuisine-du-monde',
+    'vegetarien'
+  ];
+  
+  const paths = [];
+  
+  for (const localeConfig of locales) {
+    for (const category of categories) {
+      paths.push({
+        params: { 
+          locale: localeConfig.code,
+          category: category
+        },
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const { locale, category } = Astro.params;
+const translations = await loadTranslations(locale as Locale);
+
+// Mock restaurant data
+const allRestaurants = [
+  {
+    id: 1,
+    name: "Le Palace du Lac",
+    slug: "le-palace-du-lac",
+    category: "Gastronomique",
+    description: "Restaurant gastronomique avec vue sur le lac d'Annecy",
+    address: "2 Avenue du Rhône, 74000 Annecy",
+    rating: 4.5,
+    priceRange: "€€€€",
+    cuisine: "Française",
+    phone: "04 50 45 12 34",
+    website: "https://palace-du-lac.fr",
+    image: "/images/restaurants/palace-lac.jpg",
+    features: ["Vue sur lac", "Terrasse", "Parking", "Réservation recommandée"]
+  },
+  {
+    id: 2,
+    name: "Chez Mamie Lise",
+    slug: "chez-mamie-lise",
+    category: "Savoyard",
+    description: "Spécialités savoyardes dans un cadre authentique",
+    address: "8 Rue de la République, 74000 Annecy",
+    rating: 4.2,
+    priceRange: "€€",
+    cuisine: "Savoyarde",
+    phone: "04 50 45 67 89",
+    image: "/images/restaurants/mamie-lise.jpg",
+    features: ["Spécialités locales", "Ambiance chaleureuse", "Menu enfant"]
+  },
+  {
+    id: 3,
+    name: "Le Petit Bouchon",
+    slug: "le-petit-bouchon",
+    category: "Sur le pouce",
+    description: "Sandwichs et plats rapides de qualité",
+    address: "15 Rue Sainte-Claire, 74000 Annecy",
+    rating: 4.0,
+    priceRange: "€",
+    cuisine: "Rapide",
+    phone: "04 50 45 99 88",
+    image: "/images/restaurants/petit-bouchon.jpg",
+    features: ["Service rapide", "À emporter", "Prix abordables"]
+  },
+  {
+    id: 4,
+    name: "Sakura Sushi",
+    slug: "sakura-sushi",
+    category: "Cuisine du monde",
+    description: "Authentique cuisine japonaise au cœur d'Annecy",
+    address: "25 Rue Carnot, 74000 Annecy",
+    rating: 4.3,
+    priceRange: "€€",
+    cuisine: "Japonaise",
+    phone: "04 50 45 77 66",
+    image: "/images/restaurants/sakura.jpg",
+    features: ["Sushi frais", "Menu végétarien", "Livraison"]
+  },
+  {
+    id: 5,
+    name: "Green Garden",
+    slug: "green-garden",
+    category: "Végétarien",
+    description: "Restaurant 100% végétarien avec produits biologiques locaux",
+    address: "12 Avenue de France, 74000 Annecy",
+    rating: 4.4,
+    priceRange: "€€",
+    cuisine: "Végétarienne",
+    phone: "04 50 45 55 44",
+    image: "/images/restaurants/green-garden.jpg",
+    features: ["Bio", "Local", "Vegan options", "Terrasse"]
+  }
+];
+
+// Category mapping for display
+const categoryMap: Record<string, string> = {
+  'gastronomique': 'Gastronomique',
+  'savoyard': 'Savoyard',
+  'sur-le-pouce': 'Sur le pouce',
+  'cuisine-du-monde': 'Cuisine du monde',
+  'vegetarien': 'Végétarien'
+};
+
+const categoryName = categoryMap[category as string] || category;
+const filteredRestaurants = allRestaurants.filter(restaurant => 
+  restaurant.category.toLowerCase().replace(/\s+/g, '-') === category
+);
+
+const title = `${categoryName} - ${t(translations, 'nav.restaurants')} - Salut Annecy`;
+const description = `Découvrez les meilleurs restaurants ${categoryName.toLowerCase()} à Annecy et dans le bassin annécien.`;
+---
+
+<Layout 
+  title={title}
+  description={description}
+  locale={locale as Locale}
+>
+  <Navigation slot="header" locale={locale as Locale} currentPath="/restaurants" />
+  
+  <div class="container">
+    <section class="category-hero">
+      <nav class="breadcrumb">
+        <a href={`/${locale}/restaurants`}>{t(translations, 'nav.restaurants')}</a>
+        <span class="separator">›</span>
+        <span class="current">{categoryName}</span>
+      </nav>
+      
+      <h1 class="page-title">{categoryName}</h1>
+      <p class="page-description">
+        {filteredRestaurants.length} {filteredRestaurants.length === 1 ? 'restaurant' : 'restaurants'} dans cette catégorie
+      </p>
+    </section>
+    
+    <div class="restaurants-layout">
+      <!-- Main Content -->
+      <main class="restaurants-main">
+        {filteredRestaurants.length > 0 ? (
+          <div class="restaurants-grid">
+            {filteredRestaurants.map((restaurant) => (
+              <article class="restaurant-card">
+                <div class="restaurant-image">
+                  <img src={restaurant.image} alt={restaurant.name} loading="lazy" />
+                  <div class="restaurant-category">{restaurant.category}</div>
+                  <div class="restaurant-rating">
+                    <span class="rating-stars">★</span>
+                    <span class="rating-value">{restaurant.rating}</span>
+                  </div>
+                </div>
+                <div class="restaurant-content">
+                  <h3 class="restaurant-name">
+                    <a href={`/${locale}/restaurants/${category}/${restaurant.slug}`}>
+                      {restaurant.name}
+                    </a>
+                  </h3>
+                  <p class="restaurant-description">{restaurant.description}</p>
+                  <p class="restaurant-address">{restaurant.address}</p>
+                  
+                  <div class="restaurant-meta">
+                    <div class="cuisine-type">{restaurant.cuisine}</div>
+                    <div class="price-range">{restaurant.priceRange}</div>
+                  </div>
+                  
+                  <div class="restaurant-features">
+                    {restaurant.features.slice(0, 3).map((feature) => (
+                      <span class="feature">{feature}</span>
+                    ))}
+                  </div>
+                  
+                  <div class="restaurant-actions">
+                    <a href={`/${locale}/restaurants/${category}/${restaurant.slug}`} class="btn btn-primary">
+                      Voir les détails
+                    </a>
+                    {restaurant.phone && (
+                      <a href={`tel:${restaurant.phone}`} class="btn btn-ghost">
+                        Appeler
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="no-restaurants">
+            <h3>Aucun restaurant trouvé</h3>
+            <p>Il n'y a pas encore de restaurants dans cette catégorie.</p>
+            <a href={`/${locale}/restaurants`} class="btn btn-primary">
+              Voir tous les restaurants
+            </a>
+          </div>
+        )}
+      </main>
+      
+      <!-- Sidebar -->
+      <aside class="restaurants-sidebar">
+        <!-- Back to Restaurants -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <a href={`/${locale}/restaurants`} class="btn btn-ghost btn-block">
+              ← Tous les restaurants
+            </a>
+          </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">Catégories</h3>
+            <ul class="category-list">
+              <li><a href={`/${locale}/restaurants/gastronomique`} class={category === 'gastronomique' ? 'active' : ''}>Gastronomique</a></li>
+              <li><a href={`/${locale}/restaurants/savoyard`} class={category === 'savoyard' ? 'active' : ''}>Savoyard</a></li>
+              <li><a href={`/${locale}/restaurants/sur-le-pouce`} class={category === 'sur-le-pouce' ? 'active' : ''}>Sur le pouce</a></li>
+              <li><a href={`/${locale}/restaurants/cuisine-du-monde`} class={category === 'cuisine-du-monde' ? 'active' : ''}>Cuisine du monde</a></li>
+              <li><a href={`/${locale}/restaurants/vegetarien`} class={category === 'vegetarien' ? 'active' : ''}>Végétarien</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Filter by Rating -->
+        <div class="sidebar-widget card">
+          <div class="card-body">
+            <h3 class="widget-title">Filtrer par note</h3>
+            <div class="rating-filters">
+              <label class="rating-filter">
+                <input type="checkbox" /> 4★ et plus
+              </label>
+              <label class="rating-filter">
+                <input type="checkbox" /> 4.5★ et plus
+              </label>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .category-hero {
+    padding: 2rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .breadcrumb a {
+    color: #8b5cf6;
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .separator {
+    color: #d1d5db;
+  }
+
+  .current {
+    font-weight: 600;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-description {
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .restaurants-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .restaurants-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .restaurant-card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s;
+    overflow: hidden;
+  }
+
+  .restaurant-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .restaurant-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .restaurant-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .restaurant-category {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: #8b5cf6;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .restaurant-rating {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .rating-stars {
+    color: #fbbf24;
+  }
+
+  .restaurant-content {
+    padding: 1.5rem;
+  }
+
+  .restaurant-name {
+    margin-bottom: 0.5rem;
+  }
+
+  .restaurant-name a {
+    color: #111827;
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .restaurant-name a:hover {
+    color: #8b5cf6;
+  }
+
+  .restaurant-description {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+
+  .restaurant-address {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .restaurant-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 0.375rem;
+  }
+
+  .cuisine-type {
+    font-size: 0.875rem;
+    color: #374151;
+    font-weight: 500;
+  }
+
+  .price-range {
+    font-weight: 600;
+    color: #059669;
+  }
+
+  .restaurant-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .feature {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .restaurant-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+
+  .btn-primary {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #7c3aed;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #8b5cf6;
+    border: 1px solid #8b5cf6;
+  }
+
+  .btn-ghost:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .no-restaurants {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .no-restaurants h3 {
+    font-size: 1.5rem;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+
+  .no-restaurants p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+
+  .restaurants-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-widget {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .category-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .category-list a {
+    color: #6b7280;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    display: block;
+    transition: all 0.2s;
+  }
+
+  .category-list a:hover,
+  .category-list a.active {
+    background: #f3f4f6;
+    color: #8b5cf6;
+  }
+
+  .rating-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .rating-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #374151;
+  }
+
+  @media (max-width: 768px) {
+    .restaurants-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+    }
+    
+    .restaurant-actions {
+      flex-direction: column;
+    }
+  }
+</style>
