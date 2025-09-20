@@ -308,10 +308,11 @@ const translations = await loadTranslations(locale);
               break;
               
             case 'forgot-password':
+              const currentLocale = window.location.pathname.split('/')[1] || 'fr';
               endpoint = '/api/auth/forget-password';
               payload = {
                 email: data.email,
-                redirectTo: `${window.location.origin}/${locale}/auth/reset-password`,
+                redirectTo: `${window.location.origin}/${currentLocale}/auth/reset-password`,
               };
               break;
               
