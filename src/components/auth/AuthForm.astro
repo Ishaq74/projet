@@ -1,0 +1,361 @@
+---
+// Auth Form Component
+import type { Locale } from '../../types/i18n';
+import { t, loadTranslations } from '../../utils/i18n';
+
+export interface Props {
+  locale: Locale;
+  type: 'login' | 'register' | 'forgot-password' | 'reset-password';
+  title: string;
+  submitText: string;
+  extraFields?: boolean;
+  redirectTo?: string;
+}
+
+const { locale, type, title, submitText, extraFields = false, redirectTo = '/' } = Astro.props;
+const translations = await loadTranslations(locale);
+---
+
+<div class="auth-form-container">
+  <div class="auth-form-card">
+    <div class="auth-form-header">
+      <h1 class="auth-form-title">{title}</h1>
+    </div>
+    
+    <form class="auth-form" data-auth-form={type}>
+      {type === 'register' && (
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName" class="form-label">
+              {t(translations, 'form.firstName')}
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              class="input"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="lastName" class="form-label">
+              {t(translations, 'form.lastName')}
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              class="input"
+              required
+            />
+          </div>
+        </div>
+      )}
+      
+      {(type === 'login' || type === 'register' || type === 'forgot-password') && (
+        <div class="form-group">
+          <label for="email" class="form-label">
+            {t(translations, 'form.email')}
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="input"
+            required
+            autocomplete="email"
+          />
+        </div>
+      )}
+      
+      {(type === 'login' || type === 'register' || type === 'reset-password') && (
+        <div class="form-group">
+          <label for="password" class="form-label">
+            {t(translations, 'form.password')}
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="input"
+            required
+            autocomplete={type === 'register' ? 'new-password' : 'current-password'}
+          />
+        </div>
+      )}
+      
+      {(type === 'register' || type === 'reset-password') && (
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">
+            {t(translations, 'form.confirmPassword')}
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            class="input"
+            required
+            autocomplete="new-password"
+          />
+        </div>
+      )}
+      
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-lg auth-submit-btn">
+          <span class="submit-text">{submitText}</span>
+          <span class="loading-text" hidden>
+            {t(translations, 'common.loading')}
+          </span>
+        </button>
+      </div>
+      
+      <input type="hidden" name="redirectTo" value={redirectTo} />
+    </form>
+    
+    <div class="auth-form-footer">
+      {type === 'login' && (
+        <div class="auth-links">
+          <a href={`/${locale}/auth/forgot-password`} class="auth-link">
+            {t(translations, 'auth.forgotPassword')}
+          </a>
+          <span class="auth-separator">•</span>
+          <a href={`/${locale}/auth/register`} class="auth-link">
+            {t(translations, 'auth.register')}
+          </a>
+        </div>
+      )}
+      
+      {type === 'register' && (
+        <div class="auth-links">
+          <span>Déjà un compte ?</span>
+          <a href={`/${locale}/auth/login`} class="auth-link">
+            {t(translations, 'auth.login')}
+          </a>
+        </div>
+      )}
+      
+      {type === 'forgot-password' && (
+        <div class="auth-links">
+          <a href={`/${locale}/auth/login`} class="auth-link">
+            Retour à la connexion
+          </a>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .auth-form-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-primary-100) 100%);
+  }
+  
+  .auth-form-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    padding: var(--space-8);
+    width: 100%;
+    max-width: 480px;
+    border: 1px solid var(--border-primary);
+  }
+  
+  .auth-form-header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+  
+  .auth-form-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0;
+  }
+  
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .form-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .auth-submit-btn {
+    width: 100%;
+    position: relative;
+  }
+  
+  .auth-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .loading-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .auth-form-footer {
+    margin-top: var(--space-6);
+    text-align: center;
+  }
+  
+  .auth-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+  }
+  
+  .auth-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .auth-link:hover {
+    text-decoration: underline;
+  }
+  
+  .auth-separator {
+    color: var(--text-muted);
+  }
+  
+  @media (max-width: 640px) {
+    .auth-form-card {
+      padding: var(--space-6);
+    }
+    
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Auth form handling
+  document.addEventListener('DOMContentLoaded', () => {
+    const authForms = document.querySelectorAll('[data-auth-form]');
+    
+    authForms.forEach((form) => {
+      if (!(form instanceof HTMLFormElement)) return;
+      
+      const type = form.getAttribute('data-auth-form');
+      const submitBtn = form.querySelector('.auth-submit-btn') as HTMLButtonElement;
+      const submitText = submitBtn?.querySelector('.submit-text') as HTMLElement;
+      const loadingText = submitBtn?.querySelector('.loading-text') as HTMLElement;
+      
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!submitBtn || !submitText || !loadingText) return;
+        
+        // Update button state
+        submitBtn.disabled = true;
+        submitText.hidden = true;
+        loadingText.hidden = false;
+        
+        try {
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData.entries());
+          
+          let endpoint = '';
+          let payload = {};
+          
+          switch (type) {
+            case 'login':
+              endpoint = '/api/auth/sign-in/email';
+              payload = {
+                email: data.email,
+                password: data.password,
+              };
+              break;
+              
+            case 'register':
+              endpoint = '/api/auth/sign-up/email';
+              payload = {
+                email: data.email,
+                password: data.password,
+                firstName: data.firstName,
+                lastName: data.lastName,
+              };
+              break;
+              
+            case 'forgot-password':
+              endpoint = '/api/auth/forget-password';
+              payload = {
+                email: data.email,
+                redirectTo: `${window.location.origin}/${locale}/auth/reset-password`,
+              };
+              break;
+              
+            case 'reset-password':
+              const urlParams = new URLSearchParams(window.location.search);
+              endpoint = '/api/auth/reset-password';
+              payload = {
+                password: data.password,
+                token: urlParams.get('token'),
+              };
+              break;
+          }
+          
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok) {
+            // Success - redirect or show success message
+            if (type === 'forgot-password') {
+              alert('Un email de réinitialisation a été envoyé à votre adresse.');
+            } else {
+              window.location.href = data.redirectTo as string || '/';
+            }
+          } else {
+            // Error - show error message
+            alert(result.error || 'Une erreur est survenue.');
+          }
+        } catch (error) {
+          console.error('Auth error:', error);
+          alert('Une erreur est survenue. Veuillez réessayer.');
+        } finally {
+          // Reset button state
+          submitBtn.disabled = false;
+          submitText.hidden = false;
+          loadingText.hidden = true;
+        }
+      });
+    });
+  });
+</script>
