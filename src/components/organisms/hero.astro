@@ -1,0 +1,338 @@
+---
+// Hero organism component
+import Container from '../atoms/container.astro';
+import Heading from '../atoms/heading.astro';
+import Paragraph from '../atoms/paragraph.astro';
+import Button from '../atoms/button.astro';
+
+export interface Props {
+  title: string;
+  subtitle?: string;
+  description?: string;
+  ctaPrimary?: {
+    text: string;
+    href: string;
+    external?: boolean;
+  };
+  ctaSecondary?: {
+    text: string;
+    href: string;
+    external?: boolean;
+  };
+  backgroundImage?: string;
+  backgroundVideo?: string;
+  variant?: 'default' | 'gradient' | 'image' | 'minimal';
+  textAlign?: 'left' | 'center' | 'right';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  description,
+  ctaPrimary,
+  ctaSecondary,
+  backgroundImage,
+  backgroundVideo,
+  variant = 'default',
+  textAlign = 'center',
+  size = 'lg',
+  class: className = '',
+} = Astro.props;
+
+const classes = [
+  'hero',
+  `hero--${variant}`,
+  `hero--${textAlign}`,
+  `hero--${size}`,
+  className
+].filter(Boolean).join(' ');
+
+const heroStyles = backgroundImage 
+  ? `background-image: url(${backgroundImage});`
+  : '';
+---
+
+<section class={classes} style={heroStyles}>
+  {backgroundVideo && (
+    <video class="hero__video" autoplay muted loop>
+      <source src={backgroundVideo} type="video/mp4">
+    </video>
+  )}
+  
+  <div class="hero__overlay"></div>
+  
+  <Container size="lg" class="hero__container">
+    <div class="hero__content">
+      {subtitle && (
+        <Paragraph 
+          size="lg" 
+          color={variant === 'minimal' ? 'primary' : 'inverse'} 
+          weight="medium" 
+          class="hero__subtitle"
+        >
+          {subtitle}
+        </Paragraph>
+      )}
+      
+      <Heading 
+        level={1} 
+        size={size === 'xl' ? '5xl' : size === 'lg' ? '4xl' : size === 'md' ? '3xl' : '2xl'}
+        color={variant === 'minimal' ? 'primary' : 'inverse'}
+        align={textAlign}
+        class="hero__title"
+      >
+        {title}
+      </Heading>
+      
+      {description && (
+        <Paragraph 
+          size={size === 'xl' ? 'xl' : 'lg'} 
+          color={variant === 'minimal' ? 'secondary' : 'inverse'} 
+          align={textAlign}
+          spacing="relaxed"
+          class="hero__description"
+        >
+          {description}
+        </Paragraph>
+      )}
+      
+      {(ctaPrimary || ctaSecondary) && (
+        <div class="hero__actions">
+          {ctaPrimary && (
+            <Button
+              variant="primary"
+              size={size === 'xl' ? 'lg' : 'md'}
+              href={ctaPrimary.href}
+              target={ctaPrimary.external ? '_blank' : undefined}
+            >
+              {ctaPrimary.text}
+            </Button>
+          )}
+          
+          {ctaSecondary && (
+            <Button
+              variant={variant === 'minimal' ? 'secondary' : 'ghost'}
+              size={size === 'xl' ? 'lg' : 'md'}
+              href={ctaSecondary.href}
+              target={ctaSecondary.external ? '_blank' : undefined}
+            >
+              {ctaSecondary.text}
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+    
+    <!-- Optional slot for additional content -->
+    <slot />
+  </Container>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }
+
+  /* Size variants */
+  .hero--sm {
+    min-height: 50vh;
+    padding: var(--space-12) 0;
+  }
+
+  .hero--md {
+    min-height: 60vh;
+    padding: var(--space-16) 0;
+  }
+
+  .hero--lg {
+    min-height: 70vh;
+    padding: var(--space-20) 0;
+  }
+
+  .hero--xl {
+    min-height: 80vh;
+    padding: var(--space-24) 0;
+  }
+
+  /* Variant styles */
+  .hero--default {
+    background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
+    color: var(--text-inverse);
+  }
+
+  .hero--gradient {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary-500) 0%,
+      var(--color-accent) 50%,
+      var(--color-primary-700) 100%
+    );
+    color: var(--text-inverse);
+  }
+
+  .hero--image {
+    background-color: var(--color-neutral-900);
+    color: var(--text-inverse);
+  }
+
+  .hero--minimal {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  /* Background video */
+  .hero__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+
+  /* Overlay */
+  .hero__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+
+  .hero--default .hero__overlay,
+  .hero--gradient .hero__overlay {
+    background: transparent;
+  }
+
+  .hero--image .hero__overlay {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .hero--minimal .hero__overlay {
+    background: transparent;
+  }
+
+  /* Container */
+  .hero__container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  /* Content */
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: 800px;
+  }
+
+  .hero--left .hero__content {
+    align-items: flex-start;
+  }
+
+  .hero--center .hero__content {
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  .hero--right .hero__content {
+    align-items: flex-end;
+    margin-left: auto;
+  }
+
+  /* Typography */
+  .hero__subtitle {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+  }
+
+  .hero__title {
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+  }
+
+  .hero__description {
+    opacity: 0.95;
+    max-width: 600px;
+  }
+
+  /* Actions */
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .hero--center .hero__actions {
+    justify-content: center;
+  }
+
+  .hero--right .hero__actions {
+    justify-content: flex-end;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .hero--sm {
+      min-height: 40vh;
+      padding: var(--space-8) 0;
+    }
+
+    .hero--md {
+      min-height: 50vh;
+      padding: var(--space-12) 0;
+    }
+
+    .hero--lg {
+      min-height: 60vh;
+      padding: var(--space-16) 0;
+    }
+
+    .hero--xl {
+      min-height: 70vh;
+      padding: var(--space-20) 0;
+    }
+
+    .hero__content {
+      gap: var(--space-4);
+    }
+
+    .hero__actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .hero__actions > * {
+      width: 100%;
+    }
+
+    /* Force center alignment on mobile for better readability */
+    .hero__content {
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero__title {
+      font-size: var(--font-size-3xl) !important;
+    }
+
+    .hero__description {
+      font-size: var(--font-size-base);
+    }
+  }
+</style>

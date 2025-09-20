@@ -1,0 +1,130 @@
+---
+// Paragraph atom component
+export interface Props {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  color?: 'primary' | 'secondary' | 'tertiary' | 'inverse';
+  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  align?: 'left' | 'center' | 'right' | 'justify';
+  spacing?: 'tight' | 'normal' | 'relaxed' | 'loose';
+  class?: string;
+}
+
+const {
+  size = 'md',
+  color = 'secondary',
+  weight = 'normal',
+  align = 'left',
+  spacing = 'normal',
+  class: className = '',
+} = Astro.props;
+
+const classes = [
+  'paragraph',
+  `paragraph--${size}`,
+  `paragraph--${color}`,
+  `paragraph--${weight}`,
+  `paragraph--${align}`,
+  `paragraph--${spacing}`,
+  className
+].filter(Boolean).join(' ');
+---
+
+<p class={classes}>
+  <slot />
+</p>
+
+<style>
+  .paragraph {
+    margin: 0;
+    font-family: var(--font-family-body);
+  }
+
+  /* Size variants */
+  .paragraph--xs {
+    font-size: var(--font-size-xs);
+  }
+
+  .paragraph--sm {
+    font-size: var(--font-size-sm);
+  }
+
+  .paragraph--md {
+    font-size: var(--font-size-base);
+  }
+
+  .paragraph--lg {
+    font-size: var(--font-size-lg);
+  }
+
+  .paragraph--xl {
+    font-size: var(--font-size-xl);
+  }
+
+  /* Color variants */
+  .paragraph--primary {
+    color: var(--text-primary);
+  }
+
+  .paragraph--secondary {
+    color: var(--text-secondary);
+  }
+
+  .paragraph--tertiary {
+    color: var(--text-tertiary);
+  }
+
+  .paragraph--inverse {
+    color: var(--text-inverse);
+  }
+
+  /* Weight variants */
+  .paragraph--normal {
+    font-weight: var(--font-weight-normal);
+  }
+
+  .paragraph--medium {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .paragraph--semibold {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .paragraph--bold {
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* Alignment variants */
+  .paragraph--left {
+    text-align: left;
+  }
+
+  .paragraph--center {
+    text-align: center;
+  }
+
+  .paragraph--right {
+    text-align: right;
+  }
+
+  .paragraph--justify {
+    text-align: justify;
+  }
+
+  /* Spacing variants */
+  .paragraph--tight {
+    line-height: var(--line-height-tight);
+  }
+
+  .paragraph--normal {
+    line-height: var(--line-height-normal);
+  }
+
+  .paragraph--relaxed {
+    line-height: var(--line-height-relaxed);
+  }
+
+  .paragraph--loose {
+    line-height: var(--line-height-loose);
+  }
+</style>

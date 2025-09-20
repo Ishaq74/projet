@@ -1,0 +1,162 @@
+---
+// Link atom component
+import Icon from './icon.astro';
+
+export interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'muted' | 'inverse';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
+  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  underline?: 'none' | 'hover' | 'always';
+  external?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  weight = 'normal',
+  underline = 'hover',
+  external = false,
+  disabled = false,
+  class: className = '',
+} = Astro.props;
+
+const classes = [
+  'link',
+  `link--${variant}`,
+  `link--${size}`,
+  `link--${weight}`,
+  `link--underline-${underline}`,
+  disabled && 'link--disabled',
+  className
+].filter(Boolean).join(' ');
+
+const linkProps = {
+  ...(href && { href }),
+  ...(external && { target: '_blank', rel: 'noopener noreferrer' }),
+  ...(disabled && { 'aria-disabled': 'true' as const, tabIndex: -1 }),
+};
+---
+
+<a class={classes} {...linkProps}>
+  <slot />
+  {external && (
+    <Icon name="external-link" size="xs" decorative={true} />
+  )}
+</a>
+
+<style>
+  .link {
+    color: var(--text-link);
+    text-decoration: none;
+    transition: var(--transition-colors);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .link:hover {
+    color: var(--text-link-hover);
+  }
+
+  .link:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Size variants */
+  .link--xs {
+    font-size: var(--font-size-xs);
+  }
+
+  .link--sm {
+    font-size: var(--font-size-sm);
+  }
+
+  .link--md {
+    font-size: var(--font-size-base);
+  }
+
+  .link--lg {
+    font-size: var(--font-size-lg);
+  }
+
+  /* Weight variants */
+  .link--normal {
+    font-weight: var(--font-weight-normal);
+  }
+
+  .link--medium {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .link--semibold {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .link--bold {
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* Color variants */
+  .link--primary {
+    color: var(--text-link);
+  }
+
+  .link--primary:hover {
+    color: var(--text-link-hover);
+  }
+
+  .link--secondary {
+    color: var(--text-secondary);
+  }
+
+  .link--secondary:hover {
+    color: var(--text-primary);
+  }
+
+  .link--muted {
+    color: var(--text-tertiary);
+  }
+
+  .link--muted:hover {
+    color: var(--text-secondary);
+  }
+
+  .link--inverse {
+    color: var(--text-inverse);
+  }
+
+  .link--inverse:hover {
+    color: var(--text-inverse);
+    opacity: 0.8;
+  }
+
+  /* Underline variants */
+  .link--underline-none {
+    text-decoration: none;
+  }
+
+  .link--underline-hover {
+    text-decoration: none;
+  }
+
+  .link--underline-hover:hover {
+    text-decoration: underline;
+  }
+
+  .link--underline-always {
+    text-decoration: underline;
+  }
+
+  /* Disabled state */
+  .link--disabled {
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+</style>
