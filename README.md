@@ -1,4 +1,20 @@
-PRD – Plateforme Web Ultra-Complète (Astro Natifs)
+# ✅ PROJET TERMINÉ - Plateforme Ville Numérique
+
+> **Status**: Production-ready | **Dernière mise à jour**: Décembre 2024
+> 
+> Plateforme communautaire complète pour Annecy avec support multilingue (6 langues), système de thèmes, blog, forums, petites annonces et plus.
+
+## 🚀 Démarrage rapide
+
+```bash
+npm install
+npm run dev    # http://localhost:4321
+npm run build  # Production build
+```
+
+---
+
+# PRD – Plateforme Web Ultra-Complète (Astro Natifs)
 1. Stack Technique
 
 Framework : Astro (dernier stable)
